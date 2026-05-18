@@ -9,10 +9,27 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware Setup
+// Dynamic CORS Setup for Localhost and Production Vercel Domain
+const allowedOrigins = [
+    'http://localhost:5173', 
+    'https://vercel.app' // ডেপ্লয় করার পর এখানে আপনার ফ্রন্টএন্ড লিংকটি বসবে
+];
+
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://your-vercel-domain.vercel.app'],
-    credentials: true
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 
