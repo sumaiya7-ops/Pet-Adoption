@@ -235,6 +235,16 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
     res.send('Pet Adoption Server API is fully operational.');
 });
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send({
+        success: false,
+        message: 'Internal Server Error',
+        error: process.env.NODE_ENV === 'development' ? err.message : {}
+    });
+});
+
 
 app.listen(port, () => {
     console.log(`Server is running smoothly on port ${port}`);
