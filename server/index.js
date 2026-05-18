@@ -243,3 +243,21 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running smoothly on port ${port}`);
 });
+// =========================================================================
+// [PETS COLLECTION CRUD OPERATORS] - Handles Add, Update, Delete & Details
+// =========================================================================
+
+// API 1: Fetch all pets with dynamic MongoDB $regex search and $in filtering
+app.get('/pets', async (req, res) => { /* ...existing code... */ });
+
+// API 2: Fetch single pet deep specification by its unique Object ID
+app.get('/pets/:id', async (req, res) => { /* ...existing code... */ });
+
+// API 3: Insert new pet listing data secure bound to verifyToken middleware
+app.post('/pets', verifyToken, async (req, res) => { /* ...existing code... */ });
+
+// API 4: Modify existing pet profile payload via transactional updateOne
+app.put('/pets/:id', verifyToken, async (req, res) => { /* ...existing code... */ });
+
+// API 5: Permanent removal of a specific listing with secure state clearance
+app.delete('/pets/:id', verifyToken, async (req, res) => { /* ...existing code... */ });
