@@ -31,7 +31,7 @@ const AddPet = () => {
         };
 
         axios.post(
-            'https://pet-adoption-server-gamma.vercel.app/pets';
+            'https://pet-adoption-server-gamma.vercel.app/pets',
  petData, 
  { withCredentials: true }
 )

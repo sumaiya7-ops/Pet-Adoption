@@ -13,22 +13,18 @@ import axios from 'axios';
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
+
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // 🔗 আপনার Vercel লাইভ ব্যাকএন্ড সার্ভার লিংক (এখানে পরিবর্তন করা হয়েছে)
-    const baseUrl = 'https://pet-adoption-server-gamma.vercel.app';
+    // ✅ SINGLE CLEAN BASE URL
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app';
 
-    // ✅ CREATE USER (FIXED + DEBUG)
+    // ✅ CREATE USER
     const createUser = async (email, password) => {
         setLoading(true);
         try {
-            const result = await createUserWithEmailAndPassword(auth, email, password);
-            console.log("✅ User Created:", result.user);
-            return result;
-        } catch (error) {
-            console.log("🔥 Signup Error:", error.code, error.message);
-            throw error;
+            return await createUserWithEmailAndPassword(auth, email, password);
         } finally {
             setLoading(false);
         }
@@ -38,12 +34,7 @@ export const AuthProvider = ({ children }) => {
     const loginUser = async (email, password) => {
         setLoading(true);
         try {
-            const result = await signInWithEmailAndPassword(auth, email, password);
-            console.log("✅ Login Success:", result.user);
-            return result;
-        } catch (error) {
-            console.log("🔥 Login Error:", error.code, error.message);
-            throw error;
+            return await signInWithEmailAndPassword(auth, email, password);
         } finally {
             setLoading(false);
         }
@@ -56,18 +47,19 @@ export const AuthProvider = ({ children }) => {
             .finally(() => setLoading(false));
     };
 
-    // ✅ LOGOUT
-    const logout = () => {
+    // ✅ LOGOUT (FIXED)
+    const logout = async () => {
         setLoading(true);
-<<<<<<< HEAD
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
-';
+        try {
+            await axios.post(`${baseUrl}/logout`, {}, {
+                withCredentials: true
+            });
 
-=======
->>>>>>> 41d9006feeca23ba652a7cc96298ff79189a4d27
-        return axios.post(`${baseUrl}/logout`, {}, { withCredentials: true })
-            .then(() => signOut(auth))
-            .finally(() => setLoading(false));
+            await signOut(auth);
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     // ✅ UPDATE PROFILE
@@ -83,19 +75,12 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
 
-<<<<<<< HEAD
-            const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
-';
-
-=======
->>>>>>> 41d9006feeca23ba652a7cc96298ff79189a4d27
             if (currentUser?.email) {
-                const loggedUser = { email: currentUser.email };
-
                 try {
-                    await axios.post(`${baseUrl}/jwt`, loggedUser, {
-                        withCredentials: true
-                    });
+                    await axios.post(`${baseUrl}/jwt`,
+                        { email: currentUser.email },
+                        { withCredentials: true }
+                    );
                 } catch (err) {
                     console.log("🔥 JWT Error:", err.message);
                 }
@@ -105,20 +90,18 @@ export const AuthProvider = ({ children }) => {
         });
 
         return () => unsubscribe();
-    }, []);
-
-    const authInfo = {
-        user,
-        loading,
-        createUser,
-        loginUser,
-        loginWithGoogle,
-        logout,
-        updateUserProfile
-    };
+    }, [baseUrl]);
 
     return (
-        <AuthContext.Provider value={authInfo}>
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            createUser,
+            loginUser,
+            loginWithGoogle,
+            logout,
+            updateUserProfile
+        }}>
             {children}
         </AuthContext.Provider>
     );

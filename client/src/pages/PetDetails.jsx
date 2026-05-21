@@ -12,16 +12,19 @@ const PetDetails = () => {
     const navigate = useNavigate();
     const [pet, setPet] = useState(null);
 
-    useEffect(() => {
-        axios.get(`https://pet-adoption-server-gamma.vercel.app/pets/${id}`)
-            .then(res => setPet(res.data))
-            .catch(err => {
-                console.error(err);
-                toast.error("Failed to load pet details");
-            });
-    }, [id]);
+useEffect(() => {
+    if (!id) return;
 
-    const info = petInfo[pet?.species?.toLowerCase()];
+    axios.get(`https://pet-adoption-server-gamma.vercel.app/pets/${id}`)
+        .then(res => setPet(res.data))
+        .catch(err => {
+            console.error(err);
+            toast.error("Failed to load pet details");
+        });
+
+}, [id]);
+
+const info = pet ? petInfo[pet.species?.toLowerCase()] : null;
 
     if (!pet) {
         return (

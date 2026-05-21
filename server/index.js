@@ -13,16 +13,16 @@ const port = process.env.PORT || 5000;
 // =======================
 const allowedOrigins = [
     'http://localhost:5173',
-    'https://pet-adoption.vercel.app'
+    process.env.CLIENT_URL
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
-        if (!allowedOrigins.includes(origin)) {
-            return callback(new Error('CORS Not Allowed'), false);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
         }
-        return callback(null, true);
+        return callback(new Error('CORS Not Allowed'));
     },
     credentials: true
 }));
@@ -42,7 +42,7 @@ const client = new MongoClient(process.env.MONGO_URI, {
 });
 
 // =======================
-// JWT VERIFY (ONLY ONE PLACE - CLEAN)
+// JWT VERIFY
 // =======================
 const verifyToken = (req, res, next) => {
     const token = req.cookies?.token;
@@ -61,7 +61,7 @@ const verifyToken = (req, res, next) => {
 };
 
 // =======================
-// MAIN RUN
+// MAIN
 // =======================
 async function run() {
     try {
@@ -72,16 +72,19 @@ async function run() {
         const requestsCollection = db.collection("requests");
 
         // =======================
-        // JWT
+        // JWT LOGIN
         // =======================
         app.post('/jwt', (req, res) => {
             const user = req.body;
-            const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+            const token = jwt.sign(user, process.env.JWT_SECRET, {
+                expiresIn: '7d'
+            });
 
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
+                secure: true,
+                sameSite: 'none'
             }).send({ success: true });
         });
 
@@ -109,8 +112,9 @@ async function run() {
         });
 
         app.get('/pets/:id', async (req, res) => {
-            const id = req.params.id;
-            const result = await petsCollection.findOne({ _id: new ObjectId(id) });
+            const result = await petsCollection.findOne({
+                _id: new ObjectId(req.params.id)
+            });
             res.send(result);
         });
 
@@ -120,44 +124,24 @@ async function run() {
         });
 
         app.put('/pets/:id', verifyToken, async (req, res) => {
-            const id = req.params.id;
             const result = await petsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { _id: new ObjectId(req.params.id) },
                 { $set: req.body }
             );
             res.send(result);
         });
 
         app.delete('/pets/:id', verifyToken, async (req, res) => {
-            const id = req.params.id;
-
-            // 🔐 SECURITY FIX: only owner can delete
             const result = await petsCollection.deleteOne({
-                _id: new ObjectId(id),
+                _id: new ObjectId(req.params.id),
                 ownerEmail: req.user.email
             });
 
+            if (result.deletedCount === 0) {
+                return res.status(403).send({ message: "Not allowed" });
+            }
+
             res.send(result);
-        });
-
-        // =======================
-        // MY LISTINGS
-        // =======================
-        app.get('/my-listings', verifyToken, async (req, res) => {
-            const email = req.user.email;
-
-            const listings = await petsCollection.find({
-                ownerEmail: email
-            }).toArray();
-
-            const totalListings = listings.length;
-            const available = listings.filter(p => p.status !== 'adopted').length;
-            const adopted = listings.filter(p => p.status === 'adopted').length;
-
-            res.send({
-                listings,
-                stats: { totalListings, available, adopted }
-            });
         });
 
         // =======================
@@ -170,8 +154,22 @@ async function run() {
                 _id: new ObjectId(request.petId)
             });
 
-            if (pet?.status === 'adopted') {
+            if (!pet) {
+                return res.status(404).send({ message: "Pet not found" });
+            }
+
+            if (pet.status === 'adopted') {
                 return res.status(400).send({ message: 'Already adopted' });
+            }
+
+            // duplicate request check
+            const exists = await requestsCollection.findOne({
+                petId: request.petId,
+                userEmail: request.userEmail
+            });
+
+            if (exists) {
+                return res.status(400).send({ message: "Already requested" });
             }
 
             const result = await requestsCollection.insertOne(request);
@@ -179,10 +177,8 @@ async function run() {
         });
 
         app.get('/my-requests', verifyToken, async (req, res) => {
-            const email = req.user.email;
-
             const result = await requestsCollection.find({
-                userEmail: email
+                userEmail: req.user.email
             }).toArray();
 
             res.send(result);
@@ -196,16 +192,23 @@ async function run() {
             res.send(result);
         });
 
-        app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
-            const result = await requestsCollection.find({
-                petId: req.params.petId
-            }).toArray();
-
-            res.send(result);
-        });
-
+        // =======================
+        // APPROVE / REJECT
+        // =======================
         app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
             const { petId } = req.body;
+
+            const pet = await petsCollection.findOne({
+                _id: new ObjectId(petId)
+            });
+
+            if (!pet) {
+                return res.status(404).send({ message: "Pet not found" });
+            }
+
+            if (pet.ownerEmail !== req.user.email) {
+                return res.status(403).send({ message: "Not allowed" });
+            }
 
             await requestsCollection.updateOne(
                 { _id: new ObjectId(req.params.id) },
@@ -229,10 +232,10 @@ async function run() {
             res.send({ success: true });
         });
 
-        console.log("MongoDB connected successfully");
+        console.log("✅ Server connected successfully");
 
     } catch (error) {
-        console.error(error);
+        console.error("❌ Server Error:", error);
     }
 }
 
@@ -246,5 +249,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+    console.log(`🚀 Server running on port ${port}`);
 });

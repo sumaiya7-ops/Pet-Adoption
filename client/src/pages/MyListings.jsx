@@ -13,21 +13,21 @@ const MyListings = () => {
     const [adoptionRequests, setAdoptionRequests] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app';
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app';
 
 
     const fetchListings = () => {
         axios.get(`${baseUrl}/my-listings?email=${user?.email}`, { withCredentials: true })
             .then(res => {
-                setListings(res.data.listings);
-                setStats(res.data.stats);
+               setListings(res.data.listings || []);
+           setStats(res.data.stats || { totalListings: 0, available: 0, adopted: 0 });
             })
             .catch(err => console.error(err));
     };
 
     useEffect(() => {
         if (user?.email) fetchListings();
-    }, [user]);
+    }, [user?.email]);
 
     const handleOpenRequests = (petId) => {
         setSelectedPetId(petId);

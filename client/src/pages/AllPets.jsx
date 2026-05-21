@@ -11,15 +11,22 @@ const AllPets = () => {
 
     const speciesOptions = ['Dog', 'Cat', 'Bird', 'Rabbit'];
 
-    useEffect(() => {
-        const speciesQuery = selectedSpecies.join(',');
-        const baseUrl = 'https://pet-adoption-server-gamma.vercel.app/';
-        
-        // এখানে /pets পরিবর্তন করে /all-pets করা হয়েছে
-        axios.get(`${baseUrl}/all-pets?search=${search}&species=${speciesQuery}&sort=${sort}`)
-            .then(res => setPets(res.data))
-            .catch(err => console.error("Error fetching pets:", err));
-    }, [search, selectedSpecies, sort]); 
+ useEffect(() => {
+    const speciesQuery = selectedSpecies.join(',');
+
+    const url = `https://pet-adoption-server-gamma.vercel.app/all-pets`;
+
+    axios.get(url, {
+        params: {
+            search,
+            species: speciesQuery,
+            sort
+        }
+    })
+    .then(res => setPets(res.data))
+    .catch(err => console.error(err));
+
+}, [search, selectedSpecies, sort]);
 
 
     const handleSpeciesChange = (species) => {

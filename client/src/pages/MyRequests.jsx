@@ -9,7 +9,7 @@ const MyRequests = () => {
     const { user } = useContext(AuthContext);
     const [requests, setRequests] = useState([]);
 
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app';
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app';
 
 
     // ইউজারের নিজস্ব রিকোয়েস্টগুলো লোড করার ফাংশন
@@ -21,19 +21,21 @@ const MyRequests = () => {
 
     useEffect(() => {
         if (user?.email) loadRequests();
-    }, [user]);
+    }, [user?.email]);
 
     // রিকোয়েস্ট ক্যানসেল বা ডিলিট করার লজিক
-    const handleCancelRequest = (id) => {
-        if (window.confirm("Are you sure you want to cancel this adoption request?")) {
-            axios.delete(`${baseUrl}/requests/${id}`, { withCredentials: true })
-                .then(() => {
-                    toast.success('Adoption request cancelled successfully. 🐾');
-                    loadRequests(); // তালিকা রিফ্রেশ করুন
-                })
-                .catch(() => toast.error('Failed to cancel request.'));
-        }
-    };
+const handleCancelRequest = async (id) => {
+    const ok = window.confirm("Are you sure?");
+    if (!ok) return;
+
+    try {
+        await axios.delete(`${baseUrl}/requests/${id}`, { withCredentials: true });
+        toast.success("Request cancelled 🐾");
+        loadRequests();
+    } catch (err) {
+        toast.error("Failed to cancel request");
+    }
+};
 
     return (
         <div className="container mx-auto px-4 py-4 bg-blue-50 min-h-screen">
