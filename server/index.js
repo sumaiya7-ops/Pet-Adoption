@@ -9,15 +9,12 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // =======================
-// Middleware
-// =======================
-// =======================
-// Middleware
+// Middleware (CORS Configuration)
 // =======================
 const allowedOrigins = [
-    'https://pet-adoption-one-tau.vercel.app' // 👈 হুবহু এই মেইন ফ্রন্টএন্ড লিঙ্কটি বসান
+    'https://pet-adoption-one-tau.vercel.app',
+    process.env.CLIENT_URL
 ];
-
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -34,7 +31,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // =======================
-// MongoDB Connection
+// MongoDB Client Setup
 // =======================
 const client = new MongoClient(process.env.MONGO_URI, {
     serverApi: {
@@ -44,16 +41,18 @@ const client = new MongoClient(process.env.MONGO_URI, {
     }
 });
 
-// ডাটাবেজ কালেকশন গ্লোবাল করা হলো
-let petsCollection;
-let requestsCollection;
+// ডাটাবেজ ও কালেকশন সহজে পাওয়ার জন্য একটি কমন হেল্পার ফাংশন
+const getCollections = () => {
+    const db = client.db("petAdoptionDB");
+    return {
+        petsCollection: db.collection("pets"),
+        requestsCollection: db.collection("requests")
+    };
+};
 
 async function dbConnect() {
     try {
         await client.connect();
-        const db = client.db("petAdoptionDB");
-        petsCollection = db.collection("pets");
-        requestsCollection = db.collection("requests");
         console.log("✅ MongoDB connected successfully at root level");
     } catch (error) {
         console.error("❌ MongoDB Connection Error:", error);
@@ -103,12 +102,11 @@ app.post('/logout', (req, res) => {
 });
 
 // =======================
-// PETS API ROUTES (Root Level)
+// PETS API ROUTES
 // =======================
 app.get('/pets', async (req, res) => {
     try {
-        if (!petsCollection) return res.status(500).send({ message: "Database not ready" });
-        
+        const { petsCollection } = getCollections();
         const { search, species } = req.query;
         let query = {};
 
@@ -129,7 +127,7 @@ app.get('/pets', async (req, res) => {
 
 app.get('/pets/:id', async (req, res) => {
     try {
-        if (!petsCollection) return res.status(500).send({ message: "Database not ready" });
+        const { petsCollection } = getCollections();
         const result = await petsCollection.findOne({ _id: new ObjectId(req.params.id) });
         res.send(result);
     } catch (err) {
@@ -139,6 +137,7 @@ app.get('/pets/:id', async (req, res) => {
 
 app.post('/pets', verifyToken, async (req, res) => {
     try {
+        const { petsCollection } = getCollections();
         const result = await petsCollection.insertOne(req.body);
         res.send(result);
     } catch (err) {
@@ -148,6 +147,7 @@ app.post('/pets', verifyToken, async (req, res) => {
 
 app.put('/pets/:id', verifyToken, async (req, res) => {
     try {
+        const { petsCollection } = getCollections();
         const result = await petsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
             { $set: { ...req.body } }
@@ -160,6 +160,7 @@ app.put('/pets/:id', verifyToken, async (req, res) => {
 
 app.delete('/pets/:id', verifyToken, async (req, res) => {
     try {
+        const { petsCollection } = getCollections();
         const result = await petsCollection.deleteOne({
             _id: new ObjectId(req.params.id),
             ownerEmail: req.user.email
@@ -179,6 +180,7 @@ app.delete('/pets/:id', verifyToken, async (req, res) => {
 // =======================
 app.post('/requests', verifyToken, async (req, res) => {
     try {
+        const { petsCollection, requestsCollection } = getCollections();
         const request = req.body;
         const pet = await petsCollection.findOne({ _id: new ObjectId(request.petId) });
 
@@ -201,6 +203,7 @@ app.post('/requests', verifyToken, async (req, res) => {
 
 app.get('/my-requests', verifyToken, async (req, res) => {
     try {
+        const { requestsCollection } = getCollections();
         const result = await requestsCollection.find({ userEmail: req.user.email }).toArray();
         res.send(result);
     } catch (err) {
@@ -210,6 +213,7 @@ app.get('/my-requests', verifyToken, async (req, res) => {
 
 app.delete('/requests/:id', verifyToken, async (req, res) => {
     try {
+        const { requestsCollection } = getCollections();
         const result = await requestsCollection.deleteOne({ _id: new ObjectId(req.params.id) });
         res.send(result);
     } catch (err) {
@@ -222,6 +226,7 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
 // =======================
 app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
     try {
+        const { petsCollection, requestsCollection } = getCollections();
         const { petId } = req.body;
         const pet = await petsCollection.findOne({ _id: new ObjectId(petId) });
 
@@ -246,6 +251,7 @@ app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
 
 app.patch('/requests/reject/:id', verifyToken, async (req, res) => {
     try {
+        const { requestsCollection } = getCollections();
         await requestsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
             { $set: { status: 'Rejected' } }
