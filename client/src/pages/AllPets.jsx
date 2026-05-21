@@ -44,7 +44,7 @@ const AllPets = () => {
             <div className="flex items-center gap-3 justify-center mb-10">
                 <PawPrint className="text-purple-800 w-10 h-10 animate-bounce" />
                 <h2 className="text-3xl md:text-5xl font-black text-center text-blue-900 tracking-tight">
-                    Find Your New <span className="text-purple-800 relative inline-block after:absolute after:bottom-1 after:left-0 after:w-full after:h-1 after:bg-emerald-500 after:rounded">Best Friend</span>
+                    Find Your New <span className="text-purple-800 relative inline-block after:absolute after:bottom-1 after:left-0 after:w-full after:h-1  after:rounded">Best Friend</span>
                 </h2>
             </div>
             

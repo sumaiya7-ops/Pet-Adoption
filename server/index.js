@@ -12,7 +12,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 // =======================
 const allowedOrigins = [
-    'http://localhost:5173',
+    'https://pet-adoption-one-tau.vercel.app',
     process.env.CLIENT_URL
 ];
 
