@@ -12,17 +12,20 @@ const port = process.env.PORT || 5000;
 // Middleware (CORS)
 // =======================
 const allowedOrigins = [
-    'https://vercel.app',
-    process.env.CLIENT_URL
+    'http://localhost:5173',
+    'https://pet-adoption-one-tau.vercel.app'
+    
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
+
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
-        return callback(new Error('CORS Not Allowed'));
+
+        return callback(null, true); // (TEMP FIX for production)
     },
     credentials: true
 }));
