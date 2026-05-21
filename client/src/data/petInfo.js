@@ -1,5 +1,5 @@
 export const petInfo = {
-  Rabbit: {
+ rabbit: {
     title: "🐰 Bunny Care Guide",
     description:
       "Bunnies are soft, gentle and emotional pets. They need calm and safe environments.",
@@ -12,7 +12,7 @@ export const petInfo = {
     fact: "Bunnies love to jump and explore safely 🐰"
   },
 
-  Cat: {
+  cat: {
     title: "🐱 Cat Care Guide",
     description:
       "Cats are independent, smart and love peaceful environments.",
@@ -25,7 +25,7 @@ export const petInfo = {
     fact: "Cats sleep 12–16 hours daily 🐱"
   },
 
-  Dog: {
+  dog: {
     title: "🐶 Dog Care Guide",
     description:
       "Dogs are loyal, friendly and very social animals.",
@@ -38,7 +38,7 @@ export const petInfo = {
     fact: "Dogs understand human emotions very well 🐶"
   },
 
-  Panda: {
+  panda: {
     title: "🐼 Panda Care Info",
     description:
       "Pandas are rare, calm and protected animals living in special reserves.",
@@ -51,7 +51,7 @@ export const petInfo = {
     fact: "Pandas eat bamboo almost all day 🌿"
   },
 
-  Koala: {
+  koala: {
     title: "🐨 Koala Care Info",
     description:
       "Koalas are sleepy tree animals with calm nature.",
