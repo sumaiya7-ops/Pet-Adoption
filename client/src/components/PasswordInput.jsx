@@ -9,6 +9,7 @@ const PasswordInput = ({ name = "password", label = "Password" }) => {
         let score = 0;
         if (pass.length >= 6) score++;
         if (/[A-Z]/.test(pass)) score++;
+        if (/[a-z]/.test(pass)) score++;
         if (/[0-9]/.test(pass)) score++;
         if (/[^A-Za-z0-9]/.test(pass)) score++;
 
