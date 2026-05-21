@@ -15,7 +15,8 @@ const PetDetails = () => {
 
    
     useEffect(() => {
-        axios.get(`http://localhost:5000/pets/${id}`)
+        axios.get(`http://https://pet-adoption-server-gamma.vercel.app
+/pets/${id}`)
             .then(res => setPet(res.data))
             .catch(err => console.error(err));
     }, [id]);
@@ -52,7 +53,8 @@ const info = petInfo[pet?.species];
             status: "Pending" // ডিফল্ট স্ট্যাটাস
         };
 
-        axios.post('http://localhost:5000/requests', adoptionData, { withCredentials: true })
+        axios.post('http://https://pet-adoption-server-gamma.vercel.app
+/requests', adoptionData, { withCredentials: true })
             .then(res => {
                 if (res.data.insertedId) {
                     toast.success('Adoption request submitted successfully! 🐾');

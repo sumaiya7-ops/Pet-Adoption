@@ -56,7 +56,8 @@ export const AuthProvider = ({ children }) => {
     // ✅ LOGOUT
     const logout = () => {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
+';
 
         return axios.post(`${baseUrl}/logout`, {}, { withCredentials: true })
             .then(() => signOut(auth))
@@ -76,7 +77,8 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
 
-            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
+';
 
             if (currentUser?.email) {
                 const loggedUser = { email: currentUser.email };

@@ -13,7 +13,8 @@ const AllPets = () => {
 
     useEffect(() => {
         const speciesQuery = selectedSpecies.join(',');
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
+';
         
         // ডাটাবেস ও কোডের সামঞ্জস্যের জন্য species প্যারামিটারটি পাঠানো হচ্ছে
         axios.get(`${baseUrl}/pets?search=${search}&species=${speciesQuery}&sort=${sort}`)
