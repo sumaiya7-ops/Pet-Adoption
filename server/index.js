@@ -12,7 +12,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 // =======================
 const allowedOrigins = [
-    'https://pet-adoption-one-tau.vercel.app',
+    'https://vercel.app',
     process.env.CLIENT_URL
 ];
 
@@ -41,9 +41,22 @@ const client = new MongoClient(process.env.MONGO_URI, {
     }
 });
 
-// ডাটাবেজ ও কালেকশন গ্লোবালি ডিফাইন করা (যাতে সব রুট এক্সেস পায়)
+// ডাটাবেজ কালেকশন গ্লোবাল করা হলো
 let petsCollection;
 let requestsCollection;
+
+async function dbConnect() {
+    try {
+        await client.connect();
+        const db = client.db("petAdoptionDB");
+        petsCollection = db.collection("pets");
+        requestsCollection = db.collection("requests");
+        console.log("✅ MongoDB connected successfully at root level");
+    } catch (error) {
+        console.error("❌ MongoDB Connection Error:", error);
+    }
+}
+dbConnect();
 
 // =======================
 // JWT VERIFY MIDDLEWARE
@@ -65,14 +78,11 @@ const verifyToken = (req, res, next) => {
 };
 
 // =======================
-// JWT AUTH ROUTES (Root Level)
+// JWT AUTH ROUTES
 // =======================
 app.post('/jwt', (req, res) => {
     const user = req.body;
-
-    const token = jwt.sign(user, process.env.JWT_SECRET, {
-        expiresIn: '7d'
-    });
+    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.cookie('token', token, {
         httpOnly: true,
@@ -82,7 +92,6 @@ app.post('/jwt', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-    // 🐾 লাইভ সাইটে ব্রাউজার থেকে কুকি সাকসেসফুলি রিমুভ করার জন্য অপ্টিমাইজড
     res.clearCookie('token', {
         httpOnly: true,
         secure: true,
@@ -91,29 +100,12 @@ app.post('/logout', (req, res) => {
 });
 
 // =======================
-// MAIN DATABASE RUN
-// =======================
-async function run() {
-    try {
-        await client.connect();
-
-        const db = client.db("petAdoptionDB");
-        petsCollection = db.collection("pets");
-        requestsCollection = db.collection("requests");
-
-        console.log("✅ MongoDB connected successfully");
-
-    } catch (error) {
-        console.error("❌ MongoDB Connection Error:", error);
-    }
-}
-run().catch(console.dir);
-
-// =======================
-// PETS API ROUTES
+// PETS API ROUTES (Root Level)
 // =======================
 app.get('/pets', async (req, res) => {
     try {
+        if (!petsCollection) return res.status(500).send({ message: "Database not ready" });
+        
         const { search, species } = req.query;
         let query = {};
 
@@ -134,9 +126,8 @@ app.get('/pets', async (req, res) => {
 
 app.get('/pets/:id', async (req, res) => {
     try {
-        const result = await petsCollection.findOne({
-            _id: new ObjectId(req.params.id)
-        });
+        if (!petsCollection) return res.status(500).send({ message: "Database not ready" });
+        const result = await petsCollection.findOne({ _id: new ObjectId(req.params.id) });
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -174,7 +165,6 @@ app.delete('/pets/:id', verifyToken, async (req, res) => {
         if (result.deletedCount === 0) {
             return res.status(403).send({ message: "Not allowed" });
         }
-
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -187,28 +177,17 @@ app.delete('/pets/:id', verifyToken, async (req, res) => {
 app.post('/requests', verifyToken, async (req, res) => {
     try {
         const request = req.body;
+        const pet = await petsCollection.findOne({ _id: new ObjectId(request.petId) });
 
-        const pet = await petsCollection.findOne({
-            _id: new ObjectId(request.petId)
-        });
+        if (!pet) return res.status(404).send({ message: "Pet not found" });
+        if (pet.status === 'adopted') return res.status(400).send({ message: 'Already adopted' });
 
-        if (!pet) {
-            return res.status(404).send({ message: "Pet not found" });
-        }
-
-        if (pet.status === 'adopted') {
-            return res.status(400).send({ message: 'Already adopted' });
-        }
-
-        // duplicate request check
         const exists = await requestsCollection.findOne({
             petId: request.petId,
             userEmail: request.userEmail
         });
 
-        if (exists) {
-            return res.status(400).send({ message: "Already requested" });
-        }
+        if (exists) return res.status(400).send({ message: "Already requested" });
 
         const result = await requestsCollection.insertOne(request);
         res.send(result);
@@ -219,10 +198,7 @@ app.post('/requests', verifyToken, async (req, res) => {
 
 app.get('/my-requests', verifyToken, async (req, res) => {
     try {
-        const result = await requestsCollection.find({
-            userEmail: req.user.email
-        }).toArray();
-
+        const result = await requestsCollection.find({ userEmail: req.user.email }).toArray();
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -231,9 +207,7 @@ app.get('/my-requests', verifyToken, async (req, res) => {
 
 app.delete('/requests/:id', verifyToken, async (req, res) => {
     try {
-        const result = await requestsCollection.deleteOne({
-            _id: new ObjectId(req.params.id)
-        });
+        const result = await requestsCollection.deleteOne({ _id: new ObjectId(req.params.id) });
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -246,18 +220,10 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
 app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
     try {
         const { petId } = req.body;
+        const pet = await petsCollection.findOne({ _id: new ObjectId(petId) });
 
-        const pet = await petsCollection.findOne({
-            _id: new ObjectId(petId)
-        });
-
-        if (!pet) {
-            return res.status(404).send({ message: "Pet not found" });
-        }
-
-        if (pet.ownerEmail !== req.user.email) {
-            return res.status(403).send({ message: "Not allowed" });
-        }
+        if (!pet) return res.status(404).send({ message: "Pet not found" });
+        if (pet.ownerEmail !== req.user.email) return res.status(403).send({ message: "Not allowed" });
 
         await requestsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
@@ -288,10 +254,10 @@ app.patch('/requests/reject/:id', verifyToken, async (req, res) => {
 });
 
 // =======================
-// ROOT & BASE LISTEN
+// ROOT & LISTEN
 // =======================
 app.get('/', (req, res) => {
-    res.send('Server Running');
+    res.send('Server Running Smoothly');
 });
 
 app.listen(port, () => {
