@@ -1,24 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Search, Filter, ArrowRight, PawPrint } from 'lucide-react';
+import { Search, Filter, ArrowRight, PawPrint, ArrowUpDown } from 'lucide-react';
 
 const AllPets = () => {
     const [pets, setPets] = useState([]);
     const [search, setSearch] = useState('');
     const [selectedSpecies, setSelectedSpecies] = useState([]);
+    const [sort, setSort] = useState(''); 
 
     const speciesOptions = ['Dog', 'Cat', 'Bird', 'Rabbit'];
 
-    // সার্চ এবং ফিল্টার চেঞ্জের সাথে সাথে ডাটাবেজ থেকে রিয়েল-টাইম ডাটা ফেচ করা
     useEffect(() => {
         const speciesQuery = selectedSpecies.join(',');
-        axios.get(`http://localhost:5000/pets?search=${search}&species=${speciesQuery}`)
+        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        
+        // ডাটাবেস ও কোডের সামঞ্জস্যের জন্য species প্যারামিটারটি পাঠানো হচ্ছে
+        axios.get(`${baseUrl}/pets?search=${search}&species=${speciesQuery}&sort=${sort}`)
             .then(res => setPets(res.data))
             .catch(err => console.error("Error fetching pets:", err));
-    }, [search, selectedSpecies]);
+    }, [search, selectedSpecies, sort]); 
 
-    // চেক বক্স হ্যান্ডেল করার লজিক
     const handleSpeciesChange = (species) => {
         if (selectedSpecies.includes(species)) {
             setSelectedSpecies(selectedSpecies.filter(s => s !== species));
@@ -28,86 +30,112 @@ const AllPets = () => {
     };
 
     return (
-        <div className="container mx-auto px-6 py-12 min-h-screen bg-slate-955 text-slate-100">
-            {/* Header Title */}
+        <div className="container mx-auto px-6 py-12 min-h-screen bg-blue-50 text-slate-900 transition-all duration-300">
+            
+            {/* 🐾 Header Title with Soft Pulse Animation */}
             <div className="flex items-center gap-3 justify-center mb-10">
-                <PawPrint className="text-emerald-500 w-8 h-8 animate-pulse" />
-                <h2 className="text-3xl md:text-5xl font-black text-center text-white tracking-tight">
-                    Find Your New <span className="text-emerald-500">Best Friend</span>
+                <PawPrint className="text-purple-800 w-10 h-10 animate-bounce" />
+                <h2 className="text-3xl md:text-5xl font-black text-center text-blue-900 tracking-tight">
+                    Find Your New <span className="text-purple-800 relative inline-block after:absolute after:bottom-1 after:left-0 after:w-full after:h-1 after:bg-emerald-500 after:rounded">Best Friend</span>
                 </h2>
             </div>
             
-            {/* 🔍 Advanced Search & Filter Layout */}
-            <div className="flex flex-col lg:flex-row gap-6 mb-12 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl items-center justify-between">
+            {/* 🔍 Premium Search, Filter & Sort Layout */}
+            <div className="flex flex-col lg:flex-row gap-6 mb-12 bg-white p-6 rounded-3xl border border-indigo-100 shadow-xl items-center justify-between">
+                
                 {/* Live Name Search */}
-                <div className="relative w-full lg:w-1/3">
-                    <Search className="absolute left-4 top-3.5 text-slate-500 w-5 h-5" />
+                <div className="relative w-full lg:w-1/4">
+                    <Search className="absolute left-4 top-3.5 text-purple-900/50 w-5 h-5" />
                     <input 
                         type="text" 
                         placeholder="Search pets by name..." 
-                        className="w-full bg-slate-800 text-white pl-12 pr-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
+                        className="w-full bg-indigo-50/70 text-purple-900 font-semibold pl-12 pr-4 py-3 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 focus:ring-2 focus:ring-purple-200 transition-all text-sm placeholder-purple-900/40"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                 
                 {/* Species Filter Checkboxes */}
-                <div className="flex flex-wrap items-center gap-6 bg-slate-950/40 px-6 py-2.5 rounded-xl border border-slate-800/60 w-full lg:w-auto">
-                    <span className="text-sm font-bold text-slate-400 flex items-center gap-2">
-                        <Filter size={16} className="text-emerald-500" /> Filter by:
+                <div className="flex flex-wrap items-center gap-6 bg-indigo-50/40 px-6 py-2.5 rounded-xl border border-indigo-100 w-full lg:w-auto">
+                    <span className="text-sm font-bold text-blue-900 flex items-center gap-2">
+                        <Filter size={16} className="text-purple-800" /> Filter by:
                     </span>
                     <div className="flex flex-wrap gap-4">
                         {speciesOptions.map(species => (
-                            <label key={species} className="flex items-center gap-2.5 cursor-pointer text-sm font-medium group text-slate-300 hover:text-white transition-colors">
+                            <label key={species} className="flex items-center gap-2.5 cursor-pointer text-sm font-bold group text-purple-900 hover:text-purple-700 transition-colors">
                                 <input 
                                     type="checkbox" 
                                     checked={selectedSpecies.includes(species)}
                                     onChange={() => handleSpeciesChange(species)}
-                                    className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-600 focus:ring-emerald-500 focus:ring-offset-slate-900"
+                                    className="w-4 h-4 rounded border-indigo-300 bg-white text-purple-800 focus:ring-purple-500 accent-purple-800 cursor-pointer"
                                 />
-                                <span>{species}</span>
+                                <span className="group-hover:translate-x-0.5 transition-transform">{species}</span>
                             </label>
                         ))}
                     </div>
+                </div>
+
+                {/* Dynamic Sorting Dropdown */}
+                <div className="relative w-full lg:w-1/5">
+                    <div className="absolute left-4 top-3.5 text-purple-900/50 flex items-center pointer-events-none">
+                        <ArrowUpDown size={16} className="text-purple-800" />
+                    </div>
+                    <select 
+                        value={sort} 
+                        onChange={(e) => setSort(e.target.value)}
+                        className="w-full bg-indigo-50/70 text-purple-900 font-bold pl-12 pr-4 py-3 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition-all text-sm appearance-none cursor-pointer"
+                    >
+                        <option value="">Sort by Price</option>
+                        <option value="asc">Price: Low to High</option>
+                        <option value="desc">Price: High to Low</option>
+                    </select>
                 </div>
             </div>
 
             {/* 🐾 Pets Dynamic Card Grid */}
             {pets.length === 0 ? (
-                <div className="text-center py-20 bg-slate-900/40 rounded-2xl border border-slate-900/60 max-w-xl mx-auto">
-                    <p className="text-slate-500 text-base font-medium">No available pets match your criteria at this moment.</p>
+                <div className="text-center py-20 bg-white rounded-3xl border border-indigo-100 max-w-xl mx-auto shadow-lg animate-fade-in">
+                    <p className="text-purple-900/60 text-base font-bold">No available pets match your criteria at this moment.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {pets.map(pet => (
-                        <div key={pet._id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-slate-700 transition-all duration-300">
+                        <div key={pet._id} className="bg-white border border-indigo-100 rounded-3xl overflow-hidden shadow-md flex flex-col justify-between group hover:-translate-y-2 hover:border-indigo-300 hover:shadow-2xl transition-all duration-300 transform">
+                            
+                            {/* Card Image Wrapper with dynamic Zoom */}
                             <div className="relative h-56 overflow-hidden">
-                                <img src={pet.image} alt={pet.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                <span className="absolute top-4 right-4 bg-slate-950/80 text-emerald-400 font-black text-xs px-3 py-1.5 rounded-full backdrop-blur-sm border border-slate-700">
-                                    {pet.species}
+                                <img src={pet.image} alt={pet.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                                <span className="absolute top-4 right-4 bg-purple-900/90 text-white font-black text-xs px-3 py-1.5 rounded-full backdrop-blur-sm shadow-md">
+                                    {pet.category || pet.species}
                                 </span>
                             </div>
+
+                            {/* Card Body content */}
                             <div className="p-6 space-y-4 flex-grow flex flex-col justify-between">
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
-                                        <h3 className="text-2xl font-black text-white">{pet.name}</h3>
-                                        <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${pet.status === 'adopted' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
+                                        <h3 className="text-2xl font-black text-blue-900 group-hover:text-purple-900 transition-colors duration-200">{pet.name}</h3>
+                                        <span className={`text-xs px-3 py-1 rounded-full font-black uppercase tracking-wider ${pet.status === 'adopted' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-purple-800 text-white shadow-sm'}`}>
                                             {pet.status === 'adopted' ? 'Adopted' : 'Available'}
                                         </span>
                                     </div>
-                                    <p className="text-sm text-slate-400 font-medium">Breed: {pet.breed} | Age: {pet.age}</p>
-                                    <p className="text-sm text-slate-400 font-medium">Location: {pet.location}</p>
+                                    <p className="text-sm text-purple-950 font-bold pt-1">Breed: <span className="text-gray-600 font-semibold">{pet.breed}</span> | Age: <span className="text-gray-600 font-semibold">{pet.age}</span></p>
+                                    <p className="text-sm text-purple-950 font-bold">Location: <span className="text-gray-600 font-semibold">{pet.location}</span></p>
                                 </div>
-                                <div className="pt-4 border-t border-slate-800 flex items-center justify-between gap-4">
+
+                                {/* Card Footer Panel */}
+                                <div className="pt-4 border-t border-indigo-50 flex items-center justify-between gap-4">
                                     <div>
-                                        <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Adoption Fee</p>
-                                        <p className="text-xl font-black text-emerald-400">${pet.adoptionFee}</p>
+                                        <p className="text-xs text-purple-900/60 uppercase font-black tracking-wider">Adoption Fee</p>
+                                        <p className="text-2xl font-black text-red-500">${pet.adoptionFee}</p>
                                     </div>
-                                    <Link to={`/pets/${pet._id}`} className="inline-flex items-center gap-2 bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white font-bold text-xs py-3 px-5 rounded-xl transition-all border border-slate-700 hover:border-emerald-500 group/btn">
-                                        View Details <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                                    <Link to={`/pets/${pet._id}`} className="inline-flex items-center gap-2 bg-indigo-100 text-purple-900 hover:bg-emerald-600 hover:text-white font-black text-xs py-3.5 px-5 rounded-xl transition-all shadow-md group/btn active:scale-95">
+                                        View Details 
+                                        <ArrowRight size={14} className="group-hover/btn:translate-x-1.5 transition-transform duration-200" />
                                     </Link>
                                 </div>
                             </div>
+
                         </div>
                     ))}
                 </div>

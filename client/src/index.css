@@ -1,3 +1,18 @@
+@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* GLOBAL LIGHT INDIGO THEME */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #eef2ff, #ffffff, #e0e7ff);
+  color: #111827;
+  font-family: system-ui, sans-serif;
+}
+
+/* smooth UI */
+* {
+  transition: all 0.2s ease-in-out;
+}
