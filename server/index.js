@@ -9,10 +9,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // =======================
-// Middleware (CORS Configuration)
+// Middleware (CORS)
 // =======================
 const allowedOrigins = [
-    'https://pet-adoption-one-tau.vercel.app',
+    'https://vercel.app',
     process.env.CLIENT_URL
 ];
 
@@ -41,34 +41,19 @@ const client = new MongoClient(process.env.MONGO_URI, {
     }
 });
 
-// ডাটাবেজ ও কালেকশন সহজে পাওয়ার জন্য একটি কমন হেল্পার ফাংশন
-const getCollections = () => {
-    const db = client.db("petAdoptionDB");
-    return {
-        petsCollection: db.collection("pets"),
-        requestsCollection: db.collection("requests")
-    };
-};
+// ইন-লাইন ডাটাবেজ কালেকশন অ্যাক্সেস ফাংশন (Vercel-এর জন্য সবচেয়ে নিরাপদ)
+const getPetsCollection = () => client.db("petAdoptionDB").collection("pets");
+const getRequestsCollection = () => client.db("petAdoptionDB").collection("requests");
 
-// =======================
-// MongoDB Connection (Fixed with await)
-// =======================
 async function dbConnect() {
     try {
-        await client.connect(); // 👈 এটি অলরেডি ঠিক আছে
-        
-        // 🐾 ডাটাবেজটি কানেক্ট হওয়ার পর গ্লোবাল কালেকশনগুলো এখানে অ্যাসাইন করে দিন
-        const db = client.db("petAdoptionDB");
-        petsCollection = db.collection("pets");
-        requestsCollection = db.collection("requests");
-        
-        console.log("✅ MongoDB connected successfully and collections assigned");
+        await client.connect();
+        console.log("✅ MongoDB successfully connected to server instance");
     } catch (error) {
         console.error("❌ MongoDB Connection Error:", error);
     }
 }
 dbConnect();
-
 
 // =======================
 // JWT VERIFY MIDDLEWARE
@@ -116,7 +101,7 @@ app.post('/logout', (req, res) => {
 // =======================
 app.get('/pets', async (req, res) => {
     try {
-        const { petsCollection } = getCollections();
+        const petsCollection = getPetsCollection();
         const { search, species } = req.query;
         let query = {};
 
@@ -129,15 +114,15 @@ app.get('/pets', async (req, res) => {
         }
 
         const result = await petsCollection.find(query).toArray();
-        res.send(result);
+        res.send(Array.isArray(result) ? result : []); // 👈 গ্যারান্টিড অ্যারে রিটার্ন করবে
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send([]);
     }
 });
 
 app.get('/pets/:id', async (req, res) => {
     try {
-        const { petsCollection } = getCollections();
+        const petsCollection = getPetsCollection();
         const result = await petsCollection.findOne({ _id: new ObjectId(req.params.id) });
         res.send(result);
     } catch (err) {
@@ -147,7 +132,7 @@ app.get('/pets/:id', async (req, res) => {
 
 app.post('/pets', verifyToken, async (req, res) => {
     try {
-        const { petsCollection } = getCollections();
+        const petsCollection = getPetsCollection();
         const result = await petsCollection.insertOne(req.body);
         res.send(result);
     } catch (err) {
@@ -157,7 +142,7 @@ app.post('/pets', verifyToken, async (req, res) => {
 
 app.put('/pets/:id', verifyToken, async (req, res) => {
     try {
-        const { petsCollection } = getCollections();
+        const petsCollection = getPetsCollection();
         const result = await petsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
             { $set: { ...req.body } }
@@ -170,7 +155,7 @@ app.put('/pets/:id', verifyToken, async (req, res) => {
 
 app.delete('/pets/:id', verifyToken, async (req, res) => {
     try {
-        const { petsCollection } = getCollections();
+        const petsCollection = getPetsCollection();
         const result = await petsCollection.deleteOne({
             _id: new ObjectId(req.params.id),
             ownerEmail: req.user.email
@@ -190,7 +175,8 @@ app.delete('/pets/:id', verifyToken, async (req, res) => {
 // =======================
 app.post('/requests', verifyToken, async (req, res) => {
     try {
-        const { petsCollection, requestsCollection } = getCollections();
+        const petsCollection = getPetsCollection();
+        const requestsCollection = getRequestsCollection();
         const request = req.body;
         const pet = await petsCollection.findOne({ _id: new ObjectId(request.petId) });
 
@@ -213,17 +199,17 @@ app.post('/requests', verifyToken, async (req, res) => {
 
 app.get('/my-requests', verifyToken, async (req, res) => {
     try {
-        const { requestsCollection } = getCollections();
+        const requestsCollection = getRequestsCollection();
         const result = await requestsCollection.find({ userEmail: req.user.email }).toArray();
-        res.send(result);
+        res.send(Array.isArray(result) ? result : []);
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send([]);
     }
 });
 
 app.delete('/requests/:id', verifyToken, async (req, res) => {
     try {
-        const { requestsCollection } = getCollections();
+        const requestsCollection = getRequestsCollection();
         const result = await requestsCollection.deleteOne({ _id: new ObjectId(req.params.id) });
         res.send(result);
     } catch (err) {
@@ -236,7 +222,8 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
 // =======================
 app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
     try {
-        const { petsCollection, requestsCollection } = getCollections();
+        const petsCollection = getPetsCollection();
+        const requestsCollection = getRequestsCollection();
         const { petId } = req.body;
         const pet = await petsCollection.findOne({ _id: new ObjectId(petId) });
 
@@ -261,7 +248,7 @@ app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
 
 app.patch('/requests/reject/:id', verifyToken, async (req, res) => {
     try {
-        const { requestsCollection } = getCollections();
+        const requestsCollection = getRequestsCollection();
         await requestsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
             { $set: { status: 'Rejected' } }
