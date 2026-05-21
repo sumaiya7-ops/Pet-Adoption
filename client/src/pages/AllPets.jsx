@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Search, Filter, ArrowRight, PawPrint, ArrowUpDown } from 'lucide-react';
 
+// ... ওপরের ইমপোর্টগুলো আগের মতোই থাকবে
+
 const AllPets = () => {
     const [pets, setPets] = useState([]);
     const [search, setSearch] = useState('');
@@ -11,22 +13,27 @@ const AllPets = () => {
 
     const speciesOptions = ['Dog', 'Cat', 'Bird', 'Rabbit'];
 
- useEffect(() => {
-    const speciesQuery = selectedSpecies.join(',');
+    useEffect(() => {
+        const speciesQuery = selectedSpecies.join(',');
 
-    const url = `https://pet-adoption-server-gamma.vercel.app/all-pets`;
+        // ❌ আগে ছিল: const url = `https://pet-adoption-server-gamma.vercel.app/all-pets`;
+        // ✅ এটিকে বদলে হুবহু এটি লিখে দিন (শেষে শুধু /pets থাকবে):
+        const url = `https://pet-adoption-server-gamma.vercel.app`;
 
-    axios.get(url, {
-        params: {
-            search,
-            species: speciesQuery,
-            sort
-        }
-    })
-    .then(res => setPets(res.data))
-    .catch(err => console.error(err));
+        axios.get(url, {
+            params: {
+                search,
+                species: speciesQuery,
+                sort
+            }
+        })
+        .then(res => setPets(res.data))
+        .catch(err => console.error(err));
 
-}, [search, selectedSpecies, sort]);
+    }, [search, selectedSpecies, sort]);
+
+    // ... ফাইলের বাকি নিচের সব কোড (handleSpeciesChange এবং রিটার্নের HTML অংশ) হুবহু আগের মতোই থাকবে
+
 
 
     const handleSpeciesChange = (species) => {
