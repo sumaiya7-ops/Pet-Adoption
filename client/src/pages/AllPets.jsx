@@ -13,7 +13,8 @@ const AllPets = () => {
 
     useEffect(() => {
         const speciesQuery = selectedSpecies.join(',');
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        // 🔗 লাইভ সার্ভার লিংক এখানে যুক্ত করা হলো
+        const baseUrl = 'https://pet-adoption-server-gamma.vercel.app';
         
         // ডাটাবেস ও কোডের সামঞ্জস্যের জন্য species প্যারামিটারটি পাঠানো হচ্ছে
         axios.get(`${baseUrl}/pets?search=${search}&species=${speciesQuery}&sort=${sort}`)
@@ -122,20 +123,13 @@ const AllPets = () => {
                                     <p className="text-sm text-purple-950 font-bold pt-1">Breed: <span className="text-gray-600 font-semibold">{pet.breed}</span> | Age: <span className="text-gray-600 font-semibold">{pet.age}</span></p>
                                     <p className="text-sm text-purple-950 font-bold">Location: <span className="text-gray-600 font-semibold">{pet.location}</span></p>
                                 </div>
-
-                                {/* Card Footer Panel */}
-                                <div className="pt-4 border-t border-indigo-50 flex items-center justify-between gap-4">
-                                    <div>
-                                        <p className="text-xs text-purple-900/60 uppercase font-black tracking-wider">Adoption Fee</p>
-                                        <p className="text-2xl font-black text-red-500">${pet.adoptionFee}</p>
-                                    </div>
-                                    <Link to={`/pets/${pet._id}`} className="inline-flex items-center gap-2 bg-indigo-100 text-purple-900 hover:bg-emerald-600 hover:text-white font-black text-xs py-3.5 px-5 rounded-xl transition-all shadow-md group/btn active:scale-95">
-                                        View Details 
-                                        <ArrowRight size={14} className="group-hover/btn:translate-x-1.5 transition-transform duration-200" />
+                                <div className="pt-4 border-t border-indigo-50 flex justify-between items-center">
+                                    <span className="text-xl font-black text-purple-950">${pet.price || pet.adoptionFee || 0}</span>
+                                    <Link to={`/pet/${pet._id}`} className="flex items-center gap-2 bg-gradient-to-r from-blue-900 to-purple-800 text-white font-black text-sm px-5 py-2.5 rounded-xl shadow-lg hover:from-purple-800 hover:to-blue-900 transition-all duration-300">
+                                        View Details <ArrowRight size={16} />
                                     </Link>
                                 </div>
                             </div>
-
                         </div>
                     ))}
                 </div>
