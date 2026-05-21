@@ -6,9 +6,7 @@ A modern and responsive pet adoption platform built with the MERN stack. It allo
 
 ## 🔗 Live Demo & Repository
 
-- 🌐 Live Site: [Add your live link here]
-- 💻 Client Repo: https://github.com/your-client-repo
-- 🖥️ Server Repo: https://github.com/your-server-repo
+- 🌐 Live Site: [https://pet-adoption-one-tau.vercel.app/]
 
 ---
 
