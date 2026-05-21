@@ -50,15 +50,25 @@ const getCollections = () => {
     };
 };
 
+// =======================
+// MongoDB Connection (Fixed with await)
+// =======================
 async function dbConnect() {
     try {
-        await client.connect();
-        console.log("✅ MongoDB connected successfully at root level");
+        await client.connect(); // 👈 এটি অলরেডি ঠিক আছে
+        
+        // 🐾 ডাটাবেজটি কানেক্ট হওয়ার পর গ্লোবাল কালেকশনগুলো এখানে অ্যাসাইন করে দিন
+        const db = client.db("petAdoptionDB");
+        petsCollection = db.collection("pets");
+        requestsCollection = db.collection("requests");
+        
+        console.log("✅ MongoDB connected successfully and collections assigned");
     } catch (error) {
         console.error("❌ MongoDB Connection Error:", error);
     }
 }
 dbConnect();
+
 
 // =======================
 // JWT VERIFY MIDDLEWARE
