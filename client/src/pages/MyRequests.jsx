@@ -9,8 +9,8 @@ const MyRequests = () => {
     const { user } = useContext(AuthContext);
     const [requests, setRequests] = useState([]);
 
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
-';
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app';
+
 
     // ইউজারের নিজস্ব রিকোয়েস্টগুলো লোড করার ফাংশন
     const loadRequests = () => {

@@ -13,7 +13,7 @@ const AllPets = () => {
 
     useEffect(() => {
         const speciesQuery = selectedSpecies.join(',');
-        const baseUrl = 'https://vercel.app';
+        const baseUrl = 'https://pet-adoption-server-gamma.vercel.app/';
         
         // এখানে /pets পরিবর্তন করে /all-pets করা হয়েছে
         axios.get(`${baseUrl}/all-pets?search=${search}&species=${speciesQuery}&sort=${sort}`)

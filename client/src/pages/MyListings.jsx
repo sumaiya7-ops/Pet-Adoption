@@ -13,8 +13,8 @@ const MyListings = () => {
     const [adoptionRequests, setAdoptionRequests] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
-';
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app';
+
 
     const fetchListings = () => {
         axios.get(`${baseUrl}/my-listings?email=${user?.email}`, { withCredentials: true })
