@@ -16,6 +16,9 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // 🔗 আপনার Vercel লাইভ ব্যাকএন্ড সার্ভার লিংক (এখানে পরিবর্তন করা হয়েছে)
+    const baseUrl = 'https://pet-adoption-server-gamma.vercel.app';
+
     // ✅ CREATE USER (FIXED + DEBUG)
     const createUser = async (email, password) => {
         setLoading(true);
@@ -56,9 +59,12 @@ export const AuthProvider = ({ children }) => {
     // ✅ LOGOUT
     const logout = () => {
         setLoading(true);
+<<<<<<< HEAD
         const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
 ';
 
+=======
+>>>>>>> 41d9006feeca23ba652a7cc96298ff79189a4d27
         return axios.post(`${baseUrl}/logout`, {}, { withCredentials: true })
             .then(() => signOut(auth))
             .finally(() => setLoading(false));
@@ -77,9 +83,12 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
 
+<<<<<<< HEAD
             const baseUrl = import.meta.env.VITE_API_URL || 'http://https://pet-adoption-server-gamma.vercel.app
 ';
 
+=======
+>>>>>>> 41d9006feeca23ba652a7cc96298ff79189a4d27
             if (currentUser?.email) {
                 const loggedUser = { email: currentUser.email };
 
