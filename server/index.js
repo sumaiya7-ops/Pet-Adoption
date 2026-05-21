@@ -11,10 +11,13 @@ const port = process.env.PORT || 5000;
 // =======================
 // Middleware
 // =======================
+// =======================
+// Middleware
+// =======================
 const allowedOrigins = [
-    'https://vercel.app',
-    process.env.CLIENT_URL
+    'https://pet-adoption-one-tau.vercel.app' // 👈 হুবহু এই মেইন ফ্রন্টএন্ড লিঙ্কটি বসান
 ];
+
 
 app.use(cors({
     origin: function (origin, callback) {
