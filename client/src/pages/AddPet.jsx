@@ -30,8 +30,11 @@ const AddPet = () => {
             status: "available" 
         };
 
-        axios.post('http://https://pet-adoption-server-gamma.vercel.app
-/pets', petData, { withCredentials: true })
+        axios.post(
+            'https://pet-adoption-server-gamma.vercel.app/pets';
+ petData, 
+ { withCredentials: true }
+)
             .then(res => {
                 if (res.data.insertedId) {
                     toast.success('Pet listed successfully for adoption! 🐾');
