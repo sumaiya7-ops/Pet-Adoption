@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // =======================
-// Middleware (CORS)
+// CORS (PRODUCTION SAFE)
 // =======================
 const allowedOrigins = [
     'http://localhost:5173',
@@ -23,37 +23,46 @@ app.use(cors({
 
 app.options('*', cors());
 
-
 app.use(express.json());
 app.use(cookieParser());
 
 // =======================
-// MongoDB Client Setup
+// MONGO (Vercel SAFE CACHE)
 // =======================
-const client = new MongoClient(process.env.MONGO_URI, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    }
-});
+let cachedClient = null;
 
-// ইন-লাইন ডাটাবেজ কালেকশন অ্যাক্সেস ফাংশন (Vercel-এর জন্য সবচেয়ে নিরাপদ)
-const getPetsCollection = () => client.db("petAdoptionDB").collection("pets");
-const getRequestsCollection = () => client.db("petAdoptionDB").collection("requests");
+async function getClient() {
+    if (cachedClient) return cachedClient;
 
-async function dbConnect() {
-    try {
-        await client.connect();
-        console.log("✅ MongoDB successfully connected to server instance");
-    } catch (error) {
-        console.error("❌ MongoDB Connection Error:", error);
-    }
+    const client = new MongoClient(process.env.MONGO_URI, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+
+    await client.connect();
+    cachedClient = client;
+
+    return client;
 }
-dbConnect();
 
 // =======================
-// JWT VERIFY MIDDLEWARE
+// COLLECTION HELPERS
+// =======================
+const getPetsCollection = async () => {
+    const client = await getClient();
+    return client.db("petAdoptionDB").collection("pets");
+};
+
+const getRequestsCollection = async () => {
+    const client = await getClient();
+    return client.db("petAdoptionDB").collection("requests");
+};
+
+// =======================
+// JWT VERIFY
 // =======================
 const verifyToken = (req, res, next) => {
     const token = req.cookies?.token;
@@ -72,11 +81,14 @@ const verifyToken = (req, res, next) => {
 };
 
 // =======================
-// JWT AUTH ROUTES
+// AUTH
 // =======================
 app.post('/jwt', (req, res) => {
     const user = req.body;
-    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    const token = jwt.sign(user, process.env.JWT_SECRET, {
+        expiresIn: '7d'
+    });
 
     res.cookie('token', token, {
         httpOnly: true,
@@ -94,33 +106,24 @@ app.post('/logout', (req, res) => {
 });
 
 // =======================
-// PETS API ROUTES
+// PETS
 // =======================
 app.get('/pets', async (req, res) => {
     try {
-        const petsCollection = getPetsCollection();
-        const { search, species } = req.query;
-        let query = {};
-
-        if (search) {
-            query.name = { $regex: search, $options: 'i' };
-        }
-
-        if (species) {
-            query.species = { $in: species.split(',') };
-        }
-
-        const result = await petsCollection.find(query).toArray();
-        res.send(Array.isArray(result) ? result : []); // 👈 গ্যারান্টিড অ্যারে রিটার্ন করবে
-    } catch (err) {
+        const petsCollection = await getPetsCollection();
+        const result = await petsCollection.find().toArray();
+        res.send(result);
+    } catch {
         res.status(500).send([]);
     }
 });
 
 app.get('/pets/:id', async (req, res) => {
     try {
-        const petsCollection = getPetsCollection();
-        const result = await petsCollection.findOne({ _id: new ObjectId(req.params.id) });
+        const petsCollection = await getPetsCollection();
+        const result = await petsCollection.findOne({
+            _id: new ObjectId(req.params.id)
+        });
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -129,7 +132,7 @@ app.get('/pets/:id', async (req, res) => {
 
 app.post('/pets', verifyToken, async (req, res) => {
     try {
-        const petsCollection = getPetsCollection();
+        const petsCollection = await getPetsCollection();
         const result = await petsCollection.insertOne(req.body);
         res.send(result);
     } catch (err) {
@@ -139,10 +142,10 @@ app.post('/pets', verifyToken, async (req, res) => {
 
 app.put('/pets/:id', verifyToken, async (req, res) => {
     try {
-        const petsCollection = getPetsCollection();
+        const petsCollection = await getPetsCollection();
         const result = await petsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
-            { $set: { ...req.body } }
+            { $set: req.body }
         );
         res.send(result);
     } catch (err) {
@@ -152,7 +155,8 @@ app.put('/pets/:id', verifyToken, async (req, res) => {
 
 app.delete('/pets/:id', verifyToken, async (req, res) => {
     try {
-        const petsCollection = getPetsCollection();
+        const petsCollection = await getPetsCollection();
+
         const result = await petsCollection.deleteOne({
             _id: new ObjectId(req.params.id),
             ownerEmail: req.user.email
@@ -161,6 +165,7 @@ app.delete('/pets/:id', verifyToken, async (req, res) => {
         if (result.deletedCount === 0) {
             return res.status(403).send({ message: "Not allowed" });
         }
+
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -168,14 +173,18 @@ app.delete('/pets/:id', verifyToken, async (req, res) => {
 });
 
 // =======================
-// REQUESTS API ROUTES
+// REQUESTS
 // =======================
 app.post('/requests', verifyToken, async (req, res) => {
     try {
-        const petsCollection = getPetsCollection();
-        const requestsCollection = getRequestsCollection();
+        const petsCollection = await getPetsCollection();
+        const requestsCollection = await getRequestsCollection();
+
         const request = req.body;
-        const pet = await petsCollection.findOne({ _id: new ObjectId(request.petId) });
+
+        const pet = await petsCollection.findOne({
+            _id: new ObjectId(request.petId)
+        });
 
         if (!pet) return res.status(404).send({ message: "Pet not found" });
         if (pet.status === 'adopted') return res.status(400).send({ message: 'Already adopted' });
@@ -189,6 +198,7 @@ app.post('/requests', verifyToken, async (req, res) => {
 
         const result = await requestsCollection.insertOne(request);
         res.send(result);
+
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
@@ -196,36 +206,36 @@ app.post('/requests', verifyToken, async (req, res) => {
 
 app.get('/my-requests', verifyToken, async (req, res) => {
     try {
-        const requestsCollection = getRequestsCollection();
-        const result = await requestsCollection.find({ userEmail: req.user.email }).toArray();
-        res.send(Array.isArray(result) ? result : []);
-    } catch (err) {
+        const requestsCollection = await getRequestsCollection();
+
+        const result = await requestsCollection
+            .find({ userEmail: req.user.email })
+            .toArray();
+
+        res.send(result);
+    } catch {
         res.status(500).send([]);
     }
 });
 
-app.delete('/requests/:id', verifyToken, async (req, res) => {
-    try {
-        const requestsCollection = getRequestsCollection();
-        const result = await requestsCollection.deleteOne({ _id: new ObjectId(req.params.id) });
-        res.send(result);
-    } catch (err) {
-        res.status(500).send({ message: err.message });
-    }
-});
-
 // =======================
-// APPROVE / REJECT ROUTES
+// APPROVE / REJECT
 // =======================
 app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
     try {
-        const petsCollection = getPetsCollection();
-        const requestsCollection = getRequestsCollection();
+        const petsCollection = await getPetsCollection();
+        const requestsCollection = await getRequestsCollection();
+
         const { petId } = req.body;
-        const pet = await petsCollection.findOne({ _id: new ObjectId(petId) });
+
+        const pet = await petsCollection.findOne({
+            _id: new ObjectId(petId)
+        });
 
         if (!pet) return res.status(404).send({ message: "Pet not found" });
-        if (pet.ownerEmail !== req.user.email) return res.status(403).send({ message: "Not allowed" });
+        if (pet.ownerEmail !== req.user.email) {
+            return res.status(403).send({ message: "Not allowed" });
+        }
 
         await requestsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
@@ -238,6 +248,7 @@ app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
         );
 
         res.send({ success: true });
+
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
@@ -245,22 +256,25 @@ app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
 
 app.patch('/requests/reject/:id', verifyToken, async (req, res) => {
     try {
-        const requestsCollection = getRequestsCollection();
+        const requestsCollection = await getRequestsCollection();
+
         await requestsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
             { $set: { status: 'Rejected' } }
         );
+
         res.send({ success: true });
+
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
 });
 
 // =======================
-// ROOT & LISTEN
+// ROOT
 // =======================
 app.get('/', (req, res) => {
-    res.send('Server Running Smoothly');
+    res.send('Server Running Smoothly 🚀');
 });
 
 app.listen(port, () => {
