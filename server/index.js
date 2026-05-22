@@ -262,7 +262,16 @@ app.get('/my-listings', verifyToken, async (req, res) => {
 app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();
-        const result = await requestsCollection.find({ petId: req.params.petId }).toArray();
+        const petId = req.params.petId;
+
+        const query = {
+            $or: [
+                { petId: petId },
+                { petId: new ObjectId(petId) }
+            ]
+        };
+
+        const result = await requestsCollection.find(query).toArray();
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
