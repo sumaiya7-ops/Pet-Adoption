@@ -219,6 +219,21 @@ app.get('/my-requests', verifyToken, async (req, res) => {
     }
 });
 
+// রিকোয়েস্ট ক্যানসেল/ডিলিট করার রাউট
+app.delete('/requests/:id', verifyToken, async (req, res) => {
+    try {
+        const requestsCollection = await getRequestsCollection();
+        const result = await requestsCollection.deleteOne({
+            _id: new ObjectId(req.params.id),
+            userEmail: req.user.email // নিরাপত্তার জন্য নিশ্চিত করা হচ্ছে যেন ইউজার শুধু নিজের রিকোয়েস্টই ডিলিট করতে পারে
+        });
+        res.send(result);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+});
+
+
 // =======================
 // APPROVE / REJECT
 // =======================

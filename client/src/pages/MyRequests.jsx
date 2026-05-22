@@ -24,18 +24,30 @@ const MyRequests = () => {
     }, [user?.email]);
 
     // রিকোয়েস্ট ক্যানসেল বা ডিলিট করার লজিক
+// রিকোয়েস্ট ক্যানসেল বা ডিলিট করার লজিক
 const handleCancelRequest = async (id) => {
-    const ok = window.confirm("Are you sure?");
+    const ok = window.confirm("Are you sure you want to cancel this request? 🐾");
     if (!ok) return;
 
     try {
-        await axios.delete(`${baseUrl}/requests/${id}`, { withCredentials: true });
-        toast.success("Request cancelled 🐾");
-        loadRequests();
+        const res = await axios.delete(`${baseUrl}/requests/${id}`, { withCredentials: true });
+        
+        // যদি ডাটাবেজ থেকে সফলভাবে ডিলিট হয় (deletedCount: 1)
+        if (res.data.deletedCount > 0) {
+            toast.success("Request cancelled successfully! 🎉");
+            
+            // ইউআই থেকে সাথে সাথে রিমুভ করার জন্য স্টেট ফিল্টার
+            const remaining = requests.filter(req => req._id !== id);
+            setRequests(remaining);
+        } else {
+            toast.error("Something went wrong or request not found.");
+        }
     } catch (err) {
+        console.error(err);
         toast.error("Failed to cancel request");
     }
 };
+
 
     return (
         <div className="container mx-auto px-4 py-4 bg-blue-50 min-h-screen">
