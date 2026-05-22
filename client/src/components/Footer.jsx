@@ -4,8 +4,7 @@ import { FaFacebookF, FaInstagram, FaGithub, FaLinkedinIn } from "react-icons/fa
 const Footer = () => {
     return (
         <footer className="relative bg-gradient-to-br from-indigo-50 via-white to-indigo-100 text-indigo-900 border-t border-indigo-100 mt-20 overflow-hidden">
-
-            {/* Glow background */}
+     
             <div className="absolute -top-20 -left-20 w-72 h-72 bg-indigo-300 blur-3xl opacity-30 rounded-full"></div>
             <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-pink-300 blur-3xl opacity-20 rounded-full"></div>
 

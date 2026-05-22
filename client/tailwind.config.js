@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        darkBg: '#0f172a', // deep slate blue background
-        cardBg: '#1e293b', // lighter slate for cards
+        darkBg: '#0f172a', 
+        cardBg: '#1e293b', 
       }
     },
   },

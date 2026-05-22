@@ -34,8 +34,7 @@ const info = pet ? petInfo[pet.species?.toLowerCase()] : null;
         );
     }
 
-    // ওনার চেক করা (মালিক নিজে রিকোয়েস্ট দিতে পারবে না)
-    const isOwner = pet?.ownerEmail === user?.email;
+       const isOwner = pet?.ownerEmail === user?.email;
 
     const handleAdoptionSubmit = (e) => {
         e.preventDefault();
@@ -82,9 +81,7 @@ const info = pet ? petInfo[pet.species?.toLowerCase()] : null;
 
     return (
         <div className="container mx-auto px-6 py-12 bg-blue-50 min-h-screen text-slate-100">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                {/* 🐾 Left Section: Pet Info Details */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">              
                 <div className="lg:col-span-2 bg-blue-50 border rounded-3xl overflow-hidden shadow-xl p-6 space-y-6">
 
                     <img
@@ -195,8 +192,7 @@ const info = pet ? petInfo[pet.species?.toLowerCase()] : null;
                         </p>
                     </div>
                 )}
-
-                {/* 📋 Right Section */}
+           
                 <div className="border border-indigo-300 rounded-3xl p-6 shadow-xl h-fit sticky top-24">
 
                     <h3 className="text-xl font-bold text-indigo-900 flex items-center gap-2 mb-1">

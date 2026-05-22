@@ -44,9 +44,7 @@ const PasswordInput = ({ name = "password", label = "Password" }) => {
                 >
                     {show ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
-            </div>
-
-            {/* 🔴🟢 LIVE STRENGTH PROGRESS BAR (চোখের প্রশান্তিদায়ক লুক) */}
+            </div>            
             {value && (
                 <div className="mt-2 bg-indigo-50/60 border border-indigo-100 p-2.5 rounded-xl animate-fade-in">
                     <div className="w-full h-1.5 bg-indigo-100 rounded-full overflow-hidden">

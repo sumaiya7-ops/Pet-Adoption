@@ -43,11 +43,10 @@ const MyRequests = () => {
 
     return (
         <div className="container mx-auto px-2 sm:px-4 py-4 bg-blue-50 min-h-screen">
-            {/* মূল কার্ড প্যানেল */}
+          
             <div className="bg-white border border-indigo-100 p-4 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl min-h-[60vh] space-y-6">
-                
-                {/* হেডার সেকশন */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 border-b border-indigo-50 pb-5 mb-2">
+              
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 border-b border-indigo-50 pb-5 mb-2">
                     <CalendarDays className="text-purple-800 shrink-0" size={32} />
                     <div>
                         <h2 className="text-2xl sm:text-3xl font-black text-blue-900 tracking-tight">My Adoption Requests</h2>
@@ -64,8 +63,7 @@ const MyRequests = () => {
                     </div>
                 ) : (
                     <div className="overflow-hidden rounded-2xl border border-indigo-100 shadow-sm bg-white">
-                        <table className="w-full text-left border-collapse block md:table">
-                            {/* ডেস্কটপ হেডার - মোবাইলে হাইড থাকবে */}
+                        <table className="w-full text-left border-collapse block md:table">                       
                             <thead className="block md:table-header-group hidden md:table-row-group">
                                 <tr className="bg-indigo-50/60 border-b border-indigo-100 text-blue-900 text-xs font-black uppercase tracking-wider block md:table-row">
                                     <th className="py-4 px-6 block md:table-cell">Pet Name</th>
@@ -101,16 +99,12 @@ const MyRequests = () => {
                                                 {req.status}
                                             </span>
                                         </td>
-                                        
-                                        {/* Actions */}
                                         <td className="block md:table-cell md:py-4 md:px-6 md:text-right">
-                                            <div className="flex justify-start md:justify-end gap-2">
-                                                {/* ভিউ বাটন */}
+                                            <div className="flex justify-start md:justify-end gap-2">                                          
                                                 <Link to={`/pets/${req.petId}`} className="inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-emerald-600 text-purple-900 hover:text-white text-xs font-black py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl transition-all border border-indigo-100 hover:border-emerald-500 shadow-sm active:scale-95">
                                                     <Eye size={14} /> View
-                                                </Link>
-                                                
-                                                {/* ক্যানসেল বাটন */}
+                                                </Link>                                                                                       
+                                          
                                                 <button onClick={() => handleCancelRequest(req._id)} className="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white text-xs font-black py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl transition-all border border-red-100 hover:border-red-500 shadow-sm active:scale-95">
                                                     <Trash2 size={14} /> Cancel
                                                 </button>

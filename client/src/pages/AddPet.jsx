@@ -13,10 +13,9 @@ const AddPet = () => {
         e.preventDefault();
         const form = e.target;
 
-        // ডাটাবেসের ফিল্টারিং সুবিধার জন্য species কে category তে রূপান্তর করা হলো
         const petData = {
             name: form.name.value,
-            category: form.species.value, // ডাটাবেসের category ফিল্ডের সাথে ম্যাচড
+            category: form.species.value, 
             breed: form.breed.value,
             age: form.age.value,
             gender: form.gender.value,
@@ -48,11 +47,9 @@ const AddPet = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 bg-blue-50 min-h-screen">
-            {/* মূল কার্ড যা সফট ইণ্ডিগোর শেডে ঢাকা */}
-            <div className="max-w-4xl mx-auto bg-blue-50 border border-indigo-100 rounded-3xl p-8 shadow-2xl space-y-6">
-                
-                {/* হেডার সেকশন */}
+        <div className="container mx-auto px-4 py-8 bg-blue-50 min-h-screen">        
+            <div className="max-w-4xl mx-auto bg-blue-50 border border-indigo-100 rounded-3xl p-8 shadow-2xl space-y-6">               
+           
                 <div className="border-b border-indigo-100 pb-5">
                     <h2 className="text-3xl font-black text-blue-900 flex items-center gap-2">
                         <PlusCircle className="text-purple-800" size={32} />
@@ -62,15 +59,11 @@ const AddPet = () => {
                         Fill out the details below to list a companion for adoption.
                     </p>
                 </div>
-
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                    {/* Pet Name */}
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">                  
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Pet Name</label>
                         <input type="text" name="name" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition placeholder-purple-900/40" placeholder="e.g. Max" />
-                    </div>
-
-                    {/* Species / Category Dropdown */}
+                    </div>                  
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Species</label>
                         <select name="species" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition cursor-pointer">
@@ -79,42 +72,30 @@ const AddPet = () => {
                             <option value="Bird">Bird</option>
                             <option value="Rabbit">Rabbit</option>
                         </select>
-                    </div>
-
-                    {/* Breed */}
+                    </div>            
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Breed</label>
                         <input type="text" name="breed" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition placeholder-purple-900/40" placeholder="e.g. German Shepherd" />
-                    </div>
-
-                    {/* Age */}
+                    </div>                    
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Age (Years/Months)</label>
                         <input type="text" name="age" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition placeholder-purple-900/40" placeholder="e.g. 2 Years" />
-                    </div>
-
-                    {/* Gender */}
+                    </div>            
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Gender</label>
                         <select name="gender" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition cursor-pointer">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
-                    </div>
-
-                    {/* Image URL */}
+                    </div>                
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Image URL</label>
                         <input type="url" name="image" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition placeholder-purple-900/40" placeholder="https://unsplash.com..." />
-                    </div>
-
-                    {/* Health Status */}
+                    </div>                
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Health Status</label>
                         <input type="text" name="healthStatus" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition placeholder-purple-900/40" placeholder="e.g. Excellent, Fully Fit" />
-                    </div>
-
-                    {/* Vaccination Status */}
+                    </div>                
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Vaccination Status</label>
                         <select name="vaccinationStatus" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition cursor-pointer">
@@ -122,33 +103,24 @@ const AddPet = () => {
                             <option value="Partially Vaccinated">Partially Vaccinated</option>
                             <option value="Not Vaccinated">Not Vaccinated</option>
                         </select>
-                    </div>
-
-                    {/* Location */}
+                    </div>                
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Location</label>
                         <input type="text" name="location" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition placeholder-purple-900/40" placeholder="e.g. Gulshan, Dhaka" />
-                    </div>
-
-                    {/* Adoption Fee */}
+                    </div>            
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Adoption Fee ($)</label>
                         <input type="number" name="adoptionFee" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition placeholder-purple-900/40" placeholder="e.g. 50 (0 for free)" />
                     </div>
-
-                    {/* Owner Email (Read Only - প্রফেশনাল এবং ইন-অ্যাক্টিভ লুক) */}
                     <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Owner Email (Read Only)</label>
                         <input type="email" name="ownerEmail" readOnly value={user?.email || ""} className="w-full bg-indigo-200/50 text-purple-950/60 font-semibold p-3.5 rounded-xl border border-indigo-200/40 cursor-not-allowed focus:outline-none" />
-                    </div>
-
-                    {/* Description */}
+                    </div>                
                     <div className="md:col-span-2">
                         <label className="block text-blue-900 font-bold mb-2">Description / Pet Story</label>
                         <textarea name="description" rows="4" required className="w-full bg-indigo-100/70 text-purple-900 font-semibold p-4 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 transition resize-none placeholder-purple-900/40" placeholder="Tell potential adopters about this pet's personality, habits, and needs..."></textarea>
                     </div>
-
-                    {/* Submit Button (আপনার সেই সিগনেচার এমারেল্ড থেকে বেগুনি হোভার এফেক্ট) */}
+  
                     <div className="md:col-span-2 pt-2">
                         <button type="submit" className="w-full bg-emerald-600 hover:bg-purple-900 text-white font-black p-4 rounded-xl transition duration-300 shadow-xl shadow-emerald-950/20 active:scale-[0.98]">
                             Publish Pet Listing

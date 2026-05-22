@@ -3,25 +3,15 @@ import { HeartHandshake, Search, ShieldCheck } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-indigo-100 via-white to-indigo-200">
-
-      {/* Floating background blobs */}
+    <section className="relative overflow-hidden bg-gradient-to-br from-indigo-100 via-white to-indigo-200">     
       <div className="absolute top-0 left-0 w-72 h-72 bg-indigo-300 rounded-full blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-pink-300 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
-
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
-
-          {/* LEFT */}
-          <div className="space-y-6">
-
-            {/* Badge */}
+        <div className="grid lg:grid-cols-2 gap-14 items-center">       
+          <div className="space-y-6">     
             <div className="inline-flex items-center gap-2 bg-indigo-200 text-indigo-900 px-5 py-2 rounded-full font-bold text-sm shadow-sm hover:scale-105 transition duration-300 cursor-pointer">
               🐾 Trusted Pet Adoption Platform
-            </div>
-
-            {/* Heading */}
+            </div>            
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-indigo-950 leading-tight">
               Find Your{" "}
               <span className="text-indigo-600 relative">
@@ -29,9 +19,7 @@ const Hero = () => {
                 <span className="absolute left-0 bottom-2 w-full h-3 bg-indigo-300/40 -z-10 rounded-lg animate-pulse"></span>
               </span>{" "}
               Furry Friend
-            </h1>
-
-            {/* Description */}
+            </h1>            
             <p className="text-lg text-indigo-800 leading-relaxed max-w-2xl hover:text-indigo-900 transition">
               Discover loving pets waiting for a forever home.
               Connect with trusted shelters through a modern adoption platform.

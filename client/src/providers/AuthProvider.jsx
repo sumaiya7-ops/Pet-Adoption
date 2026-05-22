@@ -16,11 +16,7 @@ export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    // ✅ SINGLE CLEAN BASE URL
-    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app';
-
-    // ✅ CREATE USER
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app';    
     const createUser = async (email, password) => {
         setLoading(true);
         try {
@@ -28,9 +24,7 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
-
-    // ✅ LOGIN USER
+    };    
     const loginUser = async (email, password) => {
         setLoading(true);
         try {
@@ -38,39 +32,31 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
-
-    // ✅ GOOGLE LOGIN
+    };    
     const loginWithGoogle = () => {
         setLoading(true);
         return signInWithPopup(auth, googleProvider)
             .finally(() => setLoading(false));
     };
-
-    // ✅ LOGOUT (FIXED)
     const logout = async () => {
         setLoading(true);
         try {
             await axios.post(`${baseUrl}/logout`, {}, {
                 withCredentials: true
             });
-
             await signOut(auth);
 
         } finally {
             setLoading(false);
         }
-    };
-
-    // ✅ UPDATE PROFILE
+    };   
     const updateUserProfile = (name, photoURL) => {
         return updateProfile(auth.currentUser, {
             displayName: name,
             photoURL: photoURL
         });
     };
-
-    // ✅ AUTH STATE LISTENER
+   
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);

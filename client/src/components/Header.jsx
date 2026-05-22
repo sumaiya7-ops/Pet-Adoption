@@ -18,9 +18,7 @@ const Header = () => {
       .catch(() => {
         toast.error("Logout failed ❌");
       });
-  };
-
-  // অ্যাক্টিভ ও ইন-অ্যাক্টিভ লিংকের জন্য লাক্সারি থিম স্টাইল (রেসপন্সিভ ফিট)
+  };  
   const navLinkClass = ({ isActive }) =>
     `text-sm font-black tracking-wide transition-all duration-300 py-2.5 px-4 rounded-xl flex items-center gap-2 ${
       isActive
@@ -33,7 +31,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 gap-4">
 
-          {/* 🐾 Logo Section */}
+          {/*  Logo Section */}
           <Link to="/" className="flex items-center gap-3 shrink-0 group">
             <img
               src={logo}
@@ -50,7 +48,7 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* 🖥️ Desktop Navigation Menu (hidden on mobile) */}
+          {/*  Navigation Menu  */}
           <nav className="hidden md:flex items-center gap-1.5">
             <NavLink to="/" className={navLinkClass}>Home</NavLink>
             <NavLink to="/all-pets" className={navLinkClass}>All Pets</NavLink>
@@ -62,9 +60,8 @@ const Header = () => {
                 <NavLink to="/dashboard/my-listings" className={navLinkClass}>My Listings</NavLink>
               </>
             )}
-          </nav>
-
-          {/* 👤 Desktop Right Action Panel (hidden on mobile) */}
+           </nav>
+       
           <div className="hidden md:flex items-center gap-4 shrink-0">
             {user ? (
               <>
@@ -98,9 +95,7 @@ const Header = () => {
                 </Link>
               </div>
             )}
-          </div>
-
-          {/* 📱 Mobile Menu Toggle Button (visible on mobile only) */}
+          </div>      
           <div className="flex md:hidden items-center">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -109,11 +104,8 @@ const Header = () => {
               {menuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
-
         </div>
-      </div>
-
-      {/* 📱 Mobile Dropdown Drawer Panel (with smooth glassmorphism look) */}
+      </div>    
       {menuOpen && (
         <div className="md:hidden border-t border-indigo-50 bg-white/95 backdrop-blur-md absolute left-0 w-full shadow-2xl animate-fade-in z-50">
           <div className="px-5 py-6 flex flex-col gap-3">
@@ -127,9 +119,7 @@ const Header = () => {
                 <NavLink to="/dashboard/add-pet" onClick={() => setMenuOpen(false)} className={navLinkClass}>Add Pet</NavLink>
                 <NavLink to="/dashboard/my-listings" onClick={() => setMenuOpen(false)} className={navLinkClass}>My Listings</NavLink>
               </>
-            )}
-
-            {/* Mobile User Panel Profile and Actions */}
+            )}        
             <div className="pt-4 mt-2 border-t border-indigo-50 flex flex-col gap-3">
               {user ? (
                 <div className="flex items-center justify-between bg-indigo-50/50 p-3 rounded-2xl border border-indigo-50/40">

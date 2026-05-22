@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../providers/AuthProvider';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, UserPlus, Check, X } from 'lucide-react'; // 🐾 Check এবং X আইকন যোগ করা হয়েছে
+import { Eye, EyeOff, UserPlus, Check, X } from 'lucide-react'; 
 
 const Register = () => {
     const { createUser, updateUserProfile, loginWithGoogle } = useContext(AuthContext);
@@ -12,9 +12,7 @@ const Register = () => {
     const [showPass, setShowPass] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    // 🔍 রিয়েল-টাইম চেক করার জন্য কন্ডিশনগুলো
-    const hasMinLength = password.length >= 6;
+   const hasMinLength = password.length >= 6;
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
@@ -28,8 +26,7 @@ const Register = () => {
         const photo = form.photo.value?.trim() || "https://www.gravatar.com/avatar/?d=mp";
         const confirmPassword = form.confirmPassword.value;
 
-        // ফাইনাল ভ্যালিডেশন চেক
-        if (!hasMinLength || !hasUppercase || !hasLowercase || !hasNumber) {
+          if (!hasMinLength || !hasUppercase || !hasLowercase || !hasNumber) {
             return toast.error("পাসওয়ার্ডের সব শর্ত পূরণ করতে হবে!");
         }
         if (password !== confirmPassword) {
@@ -63,28 +60,21 @@ const Register = () => {
 
     return (
         <div className="min-h-screen bg-blue-50 flex items-center justify-center p-6">
-            <div className="w-full max-w-md bg-white border rounded-3xl p-8 shadow-xl space-y-5">
-
-                {/* Header */}
+            <div className="w-full max-w-md bg-white border rounded-3xl p-8 shadow-xl space-y-5">         
                 <div className="text-center">
                     <UserPlus className="mx-auto text-purple-800" size={40} />
                     <h2 className="text-2xl font-black text-blue-900">Create Account</h2>
                 </div>
-
-                {/* Google Button */}
+               
                 <button onClick={onGoogleClick} className="w-full border p-3 rounded-xl font-bold hover:bg-gray-100">
                     Sign up with Google
                 </button>
-
-                <hr />
-
-                {/* Form */}
+                <hr />           
                 <form onSubmit={handleRegister} className="space-y-3">
                     <input name="name" type="text" placeholder="Full Name" required className="w-full p-3 border rounded-xl" />
                     <input name="email" type="email" placeholder="Email" required className="w-full p-3 border rounded-xl" />
                     <input name="photo" type="url" placeholder="Photo URL (optional)" className="w-full p-3 border rounded-xl" />
 
-                    {/* Password */}
                     <div className="relative">
                         <input
                             type={showPass ? "text" : "password"}
@@ -99,7 +89,6 @@ const Register = () => {
                         </button>
                     </div>
 
-                    {/* 🐾 লাইভ পাসওয়ার্ড রিকোয়ারমেন্ট বক্স */}
                     {password && (
                         <div className="p-3 bg-gray-50 rounded-xl border text-xs space-y-1.5 transition-all">
                             <p className="font-bold text-gray-600 mb-1">Password Requirements:</p>
@@ -121,8 +110,7 @@ const Register = () => {
                             </div>
                         </div>
                     )}
-
-                    {/* Confirm Password */}
+              
                     <div className="relative">
                         <input type={showConfirm ? "text" : "password"} name="confirmPassword" placeholder="Confirm Password" required className="w-full p-3 border rounded-xl pr-10" />
                         <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-3 text-gray-500">

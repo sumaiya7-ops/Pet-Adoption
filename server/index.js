@@ -7,10 +7,6 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-
-// =======================
-// CORS (PRODUCTION SAFE)
-// =======================
 const allowedOrigins = [
     'http://localhost:5173',
     'https://pet-adoption-one-tau.vercel.app'
@@ -22,14 +18,8 @@ app.use(cors({
 }));
 
 app.options('/{*splat}', cors());
-
-
 app.use(express.json());
 app.use(cookieParser());
-
-// =======================
-// MONGO (Vercel SAFE CACHE)
-// =======================
 let cachedClient = null;
 
 async function getClient() {
@@ -49,9 +39,6 @@ async function getClient() {
     return client;
 }
 
-// =======================
-// COLLECTION HELPERS
-// =======================
 const getPetsCollection = async () => {
     const client = await getClient();
     return client.db("petAdoptionDB").collection("pets");
@@ -62,9 +49,6 @@ const getRequestsCollection = async () => {
     return client.db("petAdoptionDB").collection("requests");
 };
 
-// =======================
-// JWT VERIFY
-// =======================
 const verifyToken = (req, res, next) => {
     const token = req.cookies?.token;
 
@@ -80,10 +64,6 @@ const verifyToken = (req, res, next) => {
         next();
     });
 };
-
-// =======================
-// AUTH
-// =======================
 app.post('/jwt', (req, res) => {
     const user = req.body;
 
@@ -99,16 +79,13 @@ app.post('/jwt', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-    res.clearCookie('token', {
-        httpOnly: true,
+    resl.clearCookie('token', {
+        httpOny: true,
         secure: true,
         sameSite: 'none'
     }).send({ success: true });
 });
 
-// =======================
-// PETS
-// =======================
 app.get('/pets', async (req, res) => {
     try {
         const petsCollection = await getPetsCollection();
@@ -173,9 +150,7 @@ app.delete('/pets/:id', verifyToken, async (req, res) => {
     }
 });
 
-// =======================
-// REQUESTS
-// =======================
+
 app.post('/requests', verifyToken, async (req, res) => {
     try {
         const petsCollection = await getPetsCollection();
@@ -219,13 +194,12 @@ app.get('/my-requests', verifyToken, async (req, res) => {
     }
 });
 
-// রিকোয়েস্ট ক্যানসেল/ডিলিট করার রাউট
 app.delete('/requests/:id', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();
         const result = await requestsCollection.deleteOne({
             _id: new ObjectId(req.params.id),
-            userEmail: req.user.email // নিরাপত্তার জন্য নিশ্চিত করা হচ্ছে যেন ইউজার শুধু নিজের রিকোয়েস্টই ডিলিট করতে পারে
+            userEmail: req.user.email 
         });
         res.send(result);
     } catch (err) {
@@ -233,7 +207,7 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
     }
 });
 
-// ২. মাই লিস্টিং ও স্ট্যাটস দেখানোর রাউট
+
 app.get('/my-listings', verifyToken, async (req, res) => {
     try {
         const petsCollection = await getPetsCollection();
@@ -258,15 +232,13 @@ app.get('/my-listings', verifyToken, async (req, res) => {
     }
 });
 
-// ৩. মডালের ভেতরে অ্যাপ্লিকেশনের লিস্ট দেখানোর রাউট
-// ৩. মডালের ভেতরে অ্যাপ্লিকেশনের লিস্ট দেখানোর রাউট (আলটিমেট বাগ-ফ্রি ভার্সন)
+
 app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();
         const petId = req.params.petId;
 
-        // 💡 ডাটাবেজে আইডি যেভাবে বা যে ফরম্যাটেই থাকুক না কেন, এই কুয়েরি সব খুঁজে বের করবে
-        const query = {
+        const query= {
             $or: [
                 { petId: petId },
                 { petId: String(petId) },
@@ -282,9 +254,6 @@ app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     }
 });
 
-// =======================
-// APPROVE / REJECT
-// =======================
 app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
     try {
         const petsCollection = await getPetsCollection();
@@ -334,9 +303,6 @@ app.patch('/requests/reject/:id', verifyToken, async (req, res) => {
     }
 });
 
-// =======================
-// ROOT
-// =======================
 app.get('/', (req, res) => {
     res.send('Server Running Smoothly 🚀');
 });

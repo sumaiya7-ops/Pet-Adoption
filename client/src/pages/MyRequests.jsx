@@ -12,7 +12,6 @@ const MyRequests = () => {
     const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app';
 
 
-    // ইউজারের নিজস্ব রিকোয়েস্টগুলো লোড করার ফাংশন
     const loadRequests = () => {
         axios.get(`${baseUrl}/my-requests?email=${user?.email}`, { withCredentials: true })
             .then(res => setRequests(res.data))
@@ -23,20 +22,16 @@ const MyRequests = () => {
         if (user?.email) loadRequests();
     }, [user?.email]);
 
-    // রিকোয়েস্ট ক্যানসেল বা ডিলিট করার লজিক
-// রিকোয়েস্ট ক্যানসেল বা ডিলিট করার লজিক
 const handleCancelRequest = async (id) => {
     const ok = window.confirm("Are you sure you want to cancel this request? 🐾");
     if (!ok) return;
 
     try {
         const res = await axios.delete(`${baseUrl}/requests/${id}`, { withCredentials: true });
-        
-        // যদি ডাটাবেজ থেকে সফলভাবে ডিলিট হয় (deletedCount: 1)
+      
         if (res.data.deletedCount > 0) {
             toast.success("Request cancelled successfully! 🎉");
-            
-            // ইউআই থেকে সাথে সাথে রিমুভ করার জন্য স্টেট ফিল্টার
+           
             const remaining = requests.filter(req => req._id !== id);
             setRequests(remaining);
         } else {
@@ -50,11 +45,9 @@ const handleCancelRequest = async (id) => {
 
 
     return (
-        <div className="container mx-auto px-4 py-4 bg-blue-50 min-h-screen">
-            {/* মূল কার্ড প্যানেল যা আপনার থিমের সাথে শতভাগ ম্যাচড */}
+        <div className="container mx-auto px-4 py-4 bg-blue-50 min-h-screen">       
             <div className="bg-white border border-indigo-100 p-8 rounded-3xl shadow-xl min-h-[60vh] space-y-6">
                 
-                {/* হেডার সেকশন */}
                 <div className="flex items-center gap-3 border-b border-indigo-50 pb-5 mb-2">
                     <CalendarDays className="text-purple-800" size={32} />
                     <div>
@@ -85,8 +78,7 @@ const handleCancelRequest = async (id) => {
                                 {requests.map(req => (
                                     <tr key={req._id} className="hover:bg-indigo-50/20 transition-colors group">
                                         <td className="py-4 px-6 font-black text-blue-900 group-hover:text-purple-900 transition-colors">{req.petName}</td>
-                                        
-                                        {/* 🔄 এই লাইনে পরিবর্তন করা হয়েছে: ডেট ফাঁকা থাকলে "Not Specified" দেখাবে */}
+                                      
                                         <td className="py-4 px-6 text-purple-950/70 font-semibold">
                                             {req.pickupDate || "Not Specified"}
                                         </td>
@@ -102,13 +94,11 @@ const handleCancelRequest = async (id) => {
                                                 {req.status}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-6 text-right flex justify-end gap-2.5">
-                                            {/* ভিউ বাটন */}
+                                        <td className="py-4 px-6 text-right flex justify-end gap-2.5">                                    
                                             <Link to={`/pets/${req.petId}`} className="inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-emerald-600 text-purple-900 hover:text-white text-xs font-black py-2.5 px-4 rounded-xl transition-all border border-indigo-100 hover:border-emerald-500 shadow-sm active:scale-95">
                                                 <Eye size={14} /> View
-                                            </Link>
-                                            
-                                            {/* ক্যানসেল বাটন */}
+                                            </Link>                                            
+                                        
                                             <button onClick={() => handleCancelRequest(req._id)} className="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white text-xs font-black py-2.5 px-4 rounded-xl transition-all border border-red-100 hover:border-red-500 shadow-sm active:scale-95">
                                                 <Trash2 size={14} /> Cancel
                                             </button>

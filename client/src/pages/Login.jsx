@@ -7,24 +7,17 @@ import { Mail, LogIn, Eye, EyeOff } from 'lucide-react';
 const Login = () => {
     const { loginUser, loginWithGoogle } = useContext(AuthContext);
     const navigate = useNavigate();
-    const location = useLocation();
-
-    // পাসওয়ার্ডের স্টেট হ্যান্ডলিং (রেজিস্টার পেজের মতো হুবহু ম্যাচড)
+    const location = useLocation();   
     const [password, setPassword] = useState("");
     const [showPass, setShowPass] = useState(false);
-
-    const from = location.state?.from?.pathname || "/";
-
-    // সাধারণ লগইন হ্যান্ডলার
+    const from = location.state?.from?.pathname || "/";   
     const handleLogin = (e) => {
         e.preventDefault();
         const form = e.target;
-
         const email = form.email.value;
 
         loginUser(email, password)
-            .then(() => {
-                // 🎉 লগইনেও স্পেশাল অভিনন্দন ও শুভেচ্ছা টোস্ট
+            .then(() => {        
                 toast.success("🎉 Congratulations! Welcome back to your pet adoption journey. Login successful! 🐾", {
                     position: "top-center",
                     autoClose: 4000,
@@ -35,11 +28,10 @@ const Login = () => {
             .catch(err => toast.error(err.message));
     };
 
-    // গুগল লগইন হ্যান্ডলার
+
     const handleGoogleLogin = () => {
         loginWithGoogle()
-            .then(() => {
-                // 🎉 গুগল লগইনেও স্পেশাল অভিনন্দন টোস্ট
+            .then(() => {          
                 toast.success("🎉 Congratulations! Google login successful. Welcome back aboard! 🐾", {
                     position: "top-center",
                     autoClose: 4000,
@@ -51,11 +43,8 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4 transition-all duration-300">
-            {/* মূল লাক্সারিয়াস কার্ড প্যানেল */}
-            <div className="w-full max-w-md bg-white border border-indigo-100 shadow-2xl rounded-3xl p-8 space-y-5">
-
-                {/* হেডার লোগো ও টেক্সট */}
+        <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4 transition-all duration-300">         
+            <div className="w-full max-w-md bg-white border border-indigo-100 shadow-2xl rounded-3xl p-8 space-y-5">          
                 <div className="text-center space-y-1.5">
                     <div className="mx-auto bg-indigo-50 text-purple-800 w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm">
                         <LogIn size={24} />
@@ -66,9 +55,7 @@ const Login = () => {
                     <p className="text-purple-900/60 font-semibold text-xs">
                         Login to continue your pet adoption journey 🐾
                     </p>
-                </div>
-
-                {/* 🔴 GOOGLE CONTINUE BUTTON (রেজিস্টার পেজের মতো হুবহু ম্যাচড) */}
+                </div>             
                 <button
                     type="button"
                     onClick={handleGoogleLogin}
@@ -81,19 +68,13 @@ const Login = () => {
                         <path fill="#34A853" d="M12 23c3.24 0 5.97-1.08 7.96-2.92l-3.7-2.87c-1.11.75-2.53 1.19-4.26 1.19-3.21 0-5.99-2.23-6.96-5.66l-3.84 2.98C3.2 20.27 7.24 23 12 23z"/>
                     </svg>
                     <span>Continue with Google</span>
-                </button>
-
-                {/* --- OR --- Divider */}
+                </button>           
                 <div className="flex items-center my-4">
                     <div className="flex-grow border-t border-indigo-100"></div>
                     <span className="px-3 text-xs font-bold text-purple-900/40 uppercase">or</span>
                     <div className="flex-grow border-t border-indigo-100"></div>
-                </div>
-
-                {/* লগইন ফর্ম */}
-                <form onSubmit={handleLogin} className="space-y-4 text-sm">
-
-                    {/* EMAIL INPUT */}
+                </div>          
+                <form onSubmit={handleLogin} className="space-y-4 text-sm">                  
                     <div className="relative">
                         <input
                             type="email"
@@ -103,9 +84,7 @@ const Login = () => {
                             className="w-full bg-indigo-100/70 text-purple-900 font-semibold px-4 pl-11 py-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800 focus:ring-2 focus:ring-purple-200 transition placeholder-purple-900/40"
                         />
                         <Mail className="absolute left-3.5 top-4 text-purple-900/40 w-4 h-4" />
-                    </div>
-
-                    {/* PASSWORD INPUT WITH SHOW/HIDE LOGIC */}
+                    </div>                
                     <div className="relative">
                         <input
                             type={showPass ? "text" : "password"}
@@ -123,19 +102,14 @@ const Login = () => {
                         >
                             {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
-                    </div>
-
-                    {/* SUBMIT BUTTON (সিগনেচার এমারেল্ড গ্রিন) */}
+                    </div>                 
                     <button
                         type="submit"
                         className="w-full bg-emerald-600 hover:bg-purple-900 text-white font-black p-3.5 rounded-xl transition duration-300 shadow-xl shadow-emerald-950/10 active:scale-[0.98] mt-2 text-sm"
                     >
                         Sign In
                     </button>
-
-                </form>
-
-                {/* ফুটার লিঙ্ক */}
+                </form>          
                 <p className="text-center text-purple-900/60 font-semibold text-xs pt-2">
                     Don’t have an account?{' '}
                     <Link to="/register" className="text-emerald-600 hover:text-purple-900 font-black transition-colors ml-1">

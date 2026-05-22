@@ -62,20 +62,16 @@ const AllPets = () => {
     };
 
 return (
-        <div className="container mx-auto px-6 py-12 min-h-screen bg-blue-50 text-slate-900 transition-all duration-300">
-            
-            {/* 🐾 Header Title */}
+        <div className="container mx-auto px-6 py-12 min-h-screen bg-blue-50 text-slate-900 transition-all duration-300">           
+    
             <div className="flex items-center gap-3 justify-center mb-10">
                 <PawPrint className="text-purple-800 w-10 h-10 animate-bounce" />
                 <h2 className="text-3xl md:text-5xl font-black text-center text-blue-900 tracking-tight">
                     Find Your New <span className="text-purple-800 relative inline-block">Best Friend</span>
                 </h2>
-            </div>
-            
-            {/* 🔍 Search, Filter & Sort Layout */}
+            </div>            
             <div className="flex flex-col lg:flex-row gap-6 mb-12 bg-white p-6 rounded-3xl border border-indigo-100 shadow-xl items-center justify-between">
-                
-                {/* Live Name Search */}
+                        
                 <div className="relative w-full lg:w-1/4">
                     <Search className="absolute left-4 top-3.5 text-purple-900/50 w-5 h-5" />
                     <input 
@@ -87,7 +83,6 @@ return (
                     />
                 </div>
                 
-                {/* Species Filter Checkboxes */}
                 <div className="flex flex-wrap items-center gap-6 bg-indigo-50/40 px-6 py-2.5 rounded-xl border border-indigo-100 w-full lg:w-auto">
                     <span className="text-sm font-bold text-blue-900 flex items-center gap-2">
                         <Filter size={16} className="text-purple-800" /> Filter by:
@@ -107,7 +102,7 @@ return (
                     </div>
                 </div>
 
-                {/* Dynamic Sorting Dropdown */}
+    
                 <div className="relative w-full lg:w-1/5">
                     <div className="absolute left-4 top-3.5 text-purple-900/50 flex items-center pointer-events-none">
                         <ArrowUpDown size={16} className="text-purple-800" />
@@ -124,7 +119,6 @@ return (
                 </div>
             </div>
 
-            {/* 🐾 Pets Dynamic Card Grid */}
             {pets.length === 0 ? (
                 <div className="text-center py-20 bg-white rounded-3xl border border-indigo-100 max-w-xl mx-auto shadow-lg">
                     <p className="text-purple-900/60 text-base font-bold">No available pets match your criteria at this moment.</p>
@@ -145,15 +139,14 @@ return (
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
                                         <h3 className="text-2xl font-black text-blue-900 group-hover:text-purple-900 transition-colors duration-200">{pet.name}</h3>
-                                        {/* 🐾 স্ট্যাটাস অনুযায়ী লাল বা বেগুনি ব্যাজ বসানো হলো */}
+                                       
                                         <span className={`text-xs px-3 py-1 rounded-full font-black uppercase tracking-wider ${pet.status === 'adopted' || pet.status === 'not available' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-purple-800 text-white shadow-sm'}`}>
                                             {pet.status === 'adopted' || pet.status === 'not available' ? 'Adopted' : 'Available'}
                                         </span>
                                     </div>
                                     <p className="text-sm text-purple-950 font-bold pt-1">Breed: <span className="text-gray-600 font-semibold">{pet.breed}</span> | Age: <span className="text-gray-600 font-semibold">{pet.age} Years</span></p>
-                                </div>
-                                
-                                {/* 🐾 কন্ডিশনাল বাটন: অ্যাডোপ্ট হয়ে গেলে বাটন লক থাকবে */}
+                                </div>                                
+                              
                                 {pet.status === 'adopted' || pet.status === 'not available' ? (
                                     <button 
                                         disabled 

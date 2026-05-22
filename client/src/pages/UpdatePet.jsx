@@ -11,9 +11,7 @@ const UpdatePet = () => {
     const navigate = useNavigate();
     const [pet, setPet] = useState(null);
 
-    const baseUrl = import.meta.env.VITE_API_URL || 'https://vercel.app';
-
-    // ১. ডাটাবেজ থেকে এই পেটের আগের তথ্য লোড করা
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app/';  
     useEffect(() => {
         axios.get(`${baseUrl}/pets/${id}`)
             .then(res => setPet(res.data))
@@ -37,8 +35,7 @@ const UpdatePet = () => {
             adoptionFee: parseFloat(form.adoptionFee.value),
             description: form.description.value,
         };
-
-        // ২. ব্যাকএন্ডের PUT এপিআই কল করা (এটি আপনার index.js এ অলরেডি তৈরি করা আছে)
+      
         axios.put(`${baseUrl}/pets/${id}`, updatedData, { withCredentials: true })
             .then(res => {
                 if (res.data.modifiedCount > 0 || res.status === 200) {

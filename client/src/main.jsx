@@ -6,7 +6,6 @@ import { AuthProvider } from './providers/AuthProvider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Adopt from './pages/Adopt';
-// Layouts & Pages Imports
 import MainLayout from './layouts/MainLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import Home from './pages/Home';

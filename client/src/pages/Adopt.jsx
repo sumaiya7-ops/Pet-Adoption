@@ -15,8 +15,7 @@ const Adopt = () => {
         );
     }
 
-    const handleConfirmAdoption = () => {
-        // 🎉 রিকোয়ারমেন্ট অনুযায়ী default alert() সরিয়ে প্রফেশনাল রঙিন টোস্ট দেওয়া হলো
+    const handleConfirmAdoption = () => {      
         toast.success(`🎉 Congratulations! Your adoption request for ${pet.title || pet.name} has been sent successfully. 🐾`, {
             position: "top-center",
             autoClose: 4000,
@@ -42,8 +41,7 @@ const Adopt = () => {
                         {pet.full || pet.description || "Every animal deserves a home filled with love and warmth. By confirming, you are opening your heart to a new companion."}
                     </p>
 
-                    <div className="space-y-3 pt-2">
-                        {/* সিগনেচার এমারেল্ড থেকে বেগুনি হোভার বাটন */}
+                    <div className="space-y-3 pt-2">                       
                         <button
                             onClick={handleConfirmAdoption}
                             className="w-full bg-emerald-600 hover:bg-purple-900 text-white font-black py-4 rounded-xl transition duration-300 shadow-md flex items-center justify-center gap-2 active:scale-[0.98]"

@@ -13,9 +13,7 @@ const DashboardLayout = () => {
         }`;
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen bg-blue-50 text-slate-900 font-sans relative">
-
-            {/* Mobile Top Navbar (শুধুমাত্র ছোট স্ক্রিনে দেখাবে) */}
+        <div className="flex flex-col lg:flex-row min-h-screen bg-blue-50 text-slate-900 font-sans relative">            
             <div className="lg:hidden flex items-center justify-between bg-purple-950 text-white p-4 sticky top-0 z-40 shadow-md">
                 <div className="flex items-center gap-2">
                     <FolderHeart className="text-emerald-400" size={24} />
@@ -27,21 +25,16 @@ const DashboardLayout = () => {
                 >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
-            </div>
-
-            {/* Backdrop Blur Layer for Mobile View */}
+            </div>   
             {isOpen && (
                 <div 
                     className="lg:hidden fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-40 transition-opacity duration-300"
                     onClick={() => setIsOpen(false)}
                 />
-            )}
-
-            {/* Sidebar (Responsive Overlay for Mobile, Fixed Column for Desktop) */}
+            )}         
             <aside className={`w-64 bg-purple-950 text-white p-6 flex flex-col justify-between h-screen fixed lg:sticky top-0 left-0 shadow-2xl z-50 lg:z-10 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 transition-transform duration-300 ease-in-out`}>
 
-                <div className="space-y-8">
-                    {/* Sidebar Header with Close Button for Mobile */}
+                <div className="space-y-8">      
                     <div className="flex items-center justify-between border-b border-white/10 pb-5">
                         <div className="flex items-center gap-2.5">
                             <FolderHeart className="text-emerald-400" size={28} />
@@ -55,9 +48,7 @@ const DashboardLayout = () => {
                         >
                             <X size={20} />
                         </button>
-                    </div>
-
-                    {/* Navigation Menu */}
+                    </div>               
                     <nav className="flex flex-col gap-2.5">
                         <NavLink to="/dashboard/my-requests" onClick={() => setIsOpen(false)} className={navLinkClass}>
                             <ClipboardList size={20} />
@@ -75,8 +66,6 @@ const DashboardLayout = () => {
                         </NavLink>
                     </nav>
                 </div>
-
-                {/* Back to Home Navigation */}
                 <div className="border-t border-white/10 pt-4">
                     <Link
                         to="/"
@@ -87,10 +76,7 @@ const DashboardLayout = () => {
                         <span>Back to Home</span>
                     </Link>
                 </div>
-
-            </aside>
-
-            {/* Content Area with Dynamic Padding */}
+            </aside>           
             <main className="flex-grow p-4 md:p-8 overflow-y-auto lg:h-screen bg-blue-50 w-full">
                 <div className="max-w-6xl mx-auto">
                     <Outlet />
