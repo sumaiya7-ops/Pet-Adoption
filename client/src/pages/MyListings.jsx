@@ -155,12 +155,13 @@ const MyListings = () => {
                                         <Eye size={14} /> View
                                     </Link>
 
-                                  <Link 
-                   to={`/dashboard/update-pet/${pet._id}`} 
-                      className="bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white text-xs font-black py-2.5 rounded-xl border border-amber-100 hover:border-amber-500 transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95 cursor-pointer"
-             >
-                    <Edit3 size={14} /> Edit
-                            </Link>
+                                  <button 
+                             onClick={() => window.location.href = `/dashboard/update-pet/${pet._id}`}
+                        className="bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white text-xs font-black py-2.5 rounded-xl border border-amber-100 hover:border-amber-500 transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95 cursor-pointer w-full"
+                                >
+                               <Edit3 size={14} /> Edit
+                               </button>
+
 
 
                                     <button
