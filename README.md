@@ -110,40 +110,52 @@ JWT_SECRET=your_secret_key
 
 ---
 
-🔐 Authentication Flow
-User signs up/login using Firebase
-Server generates JWT token
-Token stored in HTTPOnly cookie
-Protected routes validate token
-🐾 Core Features
-🐶 Pet Management
-Add new pet
-Edit pet details
-Delete pet
-View all pets
-❤️ Adoption System
-Send adoption request
-Approve / reject request
-Prevent self-adoption
-Lock adopted pets
-📊 Dashboard
-Total listings count
-Available pets
-Adopted pets
-Request management system
-🎯 Future Improvements
-Chat system between adopter & owner
-Payment integration
-Cloud image upload (Cloudinary)
-Admin dashboard
-AI pet recommendation system
-👨‍💻 Developer
+### 🔐 Authentication Flow
+> **User Flow & Security**
+* `User signs up/login using Firebase`
+* `Server generates JWT token`
+* `Token stored in HTTPOnly cookie`
+* `Protected routes validate token`
 
-Built with ❤️ by [Sumaiya Sorhad Marjiya]
+### 🐾 Core Features
 
-⭐ Project Highlights
-Full Stack MERN Application
-Secure Authentication System
-Real-time Filtering & Search
-Production-level UI/UX
-Clean and scalable architecture
+#### 🐶 Pet Management
+> **Feline & Canine Administration**
+* `Add new pet` — Create fresh companion listings
+* `Edit pet details` — Modify attributes and specs
+* `Delete pet` — Remove listings from database
+* `View all pets` — Browse entire companion registry
+
+#### ❤️ Adoption System
+> **Matchmaking & Requests**
+* `Send adoption request`
+* `Approve / reject request`
+* `Prevent self-adoption`
+* `Lock adopted pets`
+
+#### 📊 Dashboard
+> **Real-time Statistics**
+* `Total listings count`
+* `Available pets`
+* `Adopted pets`
+* `Request management system`
+
+### 🎯 Future Improvements
+> **Upcoming Modules**
+* `Chat system between adopter & owner`
+* `Payment integration`
+* `Cloud image upload (Cloudinary)`
+* `Admin dashboard`
+* `AI pet recommendation system`
+
+### 👨‍💻 Developer
+Built with ❤️ by **[Sumaiya Sorhad Marjiya]**
+
+### ⭐ Project Highlights
+> **Technical Overview**
+* `Full Stack MERN Application`
+* `Secure Authentication System`
+* `Real-time Filtering & Search`
+* `Production-level UI/UX`
+* `Clean and scalable architecture`
+
