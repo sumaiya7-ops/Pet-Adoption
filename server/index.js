@@ -233,7 +233,41 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
     }
 });
 
+// ২. মাই লিস্টিং ও স্ট্যাটস দেখানোর রাউট
+app.get('/my-listings', verifyToken, async (req, res) => {
+    try {
+        const petsCollection = await getPetsCollection();
+        const queryEmail = req.query.email;
 
+        if (req.user.email !== queryEmail) {
+            return res.status(403).send({ message: "Forbidden Access" });
+        }
+
+        const userPets = await petsCollection.find({ ownerEmail: queryEmail }).toArray();
+
+        const totalListings = userPets.length;
+        const available = userPets.filter(pet => pet.status === 'available' || pet.status !== 'adopted').length;
+        const shadowAdopted = userPets.filter(pet => pet.status === 'adopted').length;
+
+        res.send({
+            listings: userPets,
+            stats: { totalListings, available, adopted: shadowAdopted }
+        });
+    } catch (err) {
+        res.status(500).send({ listings: [], stats: { totalListings: 0, available: 0, adopted: 0 } });
+    }
+});
+
+// ৩. মডালের ভেতরে অ্যাপ্লিকেশনের লিস্ট দেখানোর রাউট
+app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
+    try {
+        const requestsCollection = await getRequestsCollection();
+        const result = await requestsCollection.find({ petId: req.params.petId }).toArray();
+        res.send(result);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+});
 // =======================
 // APPROVE / REJECT
 // =======================
