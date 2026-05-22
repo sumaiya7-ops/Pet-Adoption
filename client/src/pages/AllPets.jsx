@@ -6,20 +6,16 @@ import { Search, Filter, PawPrint, ArrowUpDown } from 'lucide-react';
 const AllPets = () => {
     const [pets, setPets] = useState([]);
     const [search, setSearch] = useState('');
-    const [selectedSpecies, setSelectedSpecies] = useState([]);
+    const [selectedSpecies, setSelectedSpecies] = useState('');
     const [sort, setSort] = useState(''); 
 
     const speciesOptions = ['Dog', 'Cat', 'Bird', 'Rabbit'];
 
     useEffect(() => {
-        // সঠিক ব্যাকএন্ড রাউট হলো শেষে /pets যুক্ত করা
-         // ✅ এটিকে বদলে হুবহু এটি লিখে দিন (শেষে শুধু /pets থাকবে):
-const url = `https://pet-adoption-server-gamma.vercel.app/pets`;
-
+        const url = `https://pet-adoption-server-gamma.vercel.app/pets`;
 
         axios.get(url)
         .then(res => {
-            // ব্যাকএন্ড থেকে আসা সম্পূর্ণ ডাটা আগে নিচ্ছি
             let fetchedPets = res.data;
 
             if (!Array.isArray(fetchedPets)) {
@@ -27,25 +23,20 @@ const url = `https://pet-adoption-server-gamma.vercel.app/pets`;
             }
 
 
-            // ১. ক্লায়েন্ট সাইড সার্চ ফিল্টারিং (নাম দিয়ে)
             if (search.trim() !== '') {
                 fetchedPets = fetchedPets.filter(pet => 
                     pet.name.toLowerCase().includes(search.toLowerCase())
                 );
             }
 
-            // ২. ক্লায়েন্ট সাইড স্পিসিস ফিল্টারিং (ক্যাটাগরি/প্রজাতি দিয়ে)
-            if (selectedSpecies.length > 0) {
+
+            if (selectedSpecies !== '') {
                 fetchedPets = fetchedPets.filter(pet => 
-                    selectedSpecies.some(species => 
-                        (pet.category && pet.category.toLowerCase() === species.toLowerCase()) || 
-                        (pet.species && pet.species.toLowerCase() === species.toLowerCase())
-                    )
+                    (pet.category && pet.category.toLowerCase() === selectedSpecies.toLowerCase()) || 
+                    (pet.species && pet.species.toLowerCase() === selectedSpecies.toLowerCase())
                 );
             }
 
-            // ৩. ক্লায়েন্ট সাইড সোর্টিং (বয়স বা প্রাইস দিয়ে)
-            // নোট: আপনার ব্যাকএন্ডে price নেই, কোডে age আছে। তাই এটি বয়স দিয়ে সর্ট করবে।
             if (sort === 'asc') {
                 fetchedPets.sort((a, b) => parseFloat(a.age) - parseFloat(b.age));
             } else if (sort === 'desc') {
@@ -56,16 +47,17 @@ const url = `https://pet-adoption-server-gamma.vercel.app/pets`;
         })
         .catch(err => {
             console.error("Data fetching error:", err);
-            setPets([]); // এরর খেলে ক্র্যাশ না করে খালি অ্যারে সেট করবে
+            setPets([]); 
         });
 
     }, [search, selectedSpecies, sort]);
 
+
     const handleSpeciesChange = (species) => {
-        if (selectedSpecies.includes(species)) {
-            setSelectedSpecies(selectedSpecies.filter(s => s !== species));
+        if (selectedSpecies === species) {
+            setSelectedSpecies(''); 
         } else {
-            setSelectedSpecies([...selectedSpecies, species]);
+            setSelectedSpecies(species);
         }
     };
 
