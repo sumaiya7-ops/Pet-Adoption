@@ -259,15 +259,19 @@ app.get('/my-listings', verifyToken, async (req, res) => {
 });
 
 // ৩. মডালের ভেতরে অ্যাপ্লিকেশনের লিস্ট দেখানোর রাউট
+// ৩. মডালের ভেতরে অ্যাপ্লিকেশনের লিস্ট দেখানোর রাউট (আলটিমেট বাগ-ফ্রি ভার্সন)
 app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();
         const petId = req.params.petId;
 
+        // 💡 ডাটাবেজে আইডি যেভাবে বা যে ফরম্যাটেই থাকুক না কেন, এই কুয়েরি সব খুঁজে বের করবে
         const query = {
             $or: [
                 { petId: petId },
-                { petId: new ObjectId(petId) }
+                { petId: String(petId) },
+                { petId: new ObjectId(petId) },
+                { "petId": petId }
             ]
         };
 
@@ -277,6 +281,7 @@ app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 });
+
 // =======================
 // APPROVE / REJECT
 // =======================
