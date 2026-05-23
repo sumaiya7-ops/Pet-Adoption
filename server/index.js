@@ -79,7 +79,7 @@ app.post('/jwt', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-    resl.clearCookie('token', {
+    res.clearCookie('token', {
         httpOny: true,
         secure: true,
         sameSite: 'none'
