@@ -59,22 +59,17 @@ const MyListings = () => {
     }
   };
 
-  // FETCH REQUESTS
-  const fetchRequests = async (pet) => {
-    try {
-      setSelectedPet(pet);
-      setShowModal(true);
+const fetchRequests = async (pet) => {
+  setSelectedPet(pet);   // 🟢 আগে state set
+  setShowModal(true);
 
-      const res = await axios.get(
-        `${baseUrl}/pet-requests/${pet._id}`,
-        { withCredentials: true }
-      );
+  const res = await axios.get(
+    `${baseUrl}/pet-requests/${pet._id}`,
+    { withCredentials: true }
+  );
 
-      setRequests(res.data);
-    } catch (err) {
-      toast.error("Failed to load requests");
-    }
-  };
+  setRequests(res.data);
+};
 
   useEffect(() => {
     if (user?.email) loadListings();
@@ -213,11 +208,9 @@ const MyListings = () => {
                       {req.status !== "Approved" && (
                         <button
                           onClick={async () => {
-                            await axios.patch(
-                              `${baseUrl}/requests/approve/${req._id}`,
-                              { petId: selectedPet._id },
-                              { withCredentials: true }
-                            );
+                            axios.patch(`${baseUrl}/requests/approve/${req._id}`, {
+  petId: selectedPet._id
+})
                             toast.success("Approved");
                             fetchRequests(selectedPet);
                             loadListings();
