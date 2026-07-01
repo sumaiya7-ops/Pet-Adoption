@@ -15,19 +15,18 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // allow Postman / server-to-server requests
         if (!origin) return callback(null, true);
 
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
 
-        return callback(new Error("Not allowed by CORS"));
+        // ❌ DO NOT throw error
+        return callback(null, false);
     },
     credentials: true
 }));
-
-
+app.options('*', cors());
 
 app.use(express.json());
 app.use(cookieParser());
@@ -229,6 +228,11 @@ app.get('/my-listings', verifyToken, async (req, res) => {
         }
 
         const userPets = await petsCollection.find({ ownerEmail: queryEmail }).toArray();
+        const petId = req.body.petId;
+
+if (!petId) {
+    return res.status(400).send({ message: "petId required" });
+}
 
         const totalListings = userPets.length;
        const available = userPets.filter(pet => pet.status === 'available').length;
@@ -248,32 +252,26 @@ app.get('/my-listings', verifyToken, async (req, res) => {
 app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();
-        const petId = req.params.petId;
         const petsCollection = await getPetsCollection();
 
-const pet = await petsCollection.findOne({
-    _id: new ObjectId(petId)
-});
+        const pet = await petsCollection.findOne({
+            _id: new ObjectId(req.params.petId)
+        });
 
-if (!pet || pet.ownerEmail !== req.user.email) {
-    return res.status(403).send({ message: "Forbidden" });
-}
+        if (!pet || pet.ownerEmail !== req.user.email) {
+            return res.status(403).send({ message: "Forbidden" });
+        }
 
         const result = await requestsCollection.find({
-    petId: petId
-}).toArray();
+            petId: req.params.petId
+        }).toArray();
+
         res.send(result);
+
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
 });
-if (!request) {
-    return res.status(404).send({ message: "Request not found" });
-}
-if (pet.status === 'adopted') {
-    return res.status(400).send({ message: "Already adopted" });
-}
-
 
 app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
     try {
