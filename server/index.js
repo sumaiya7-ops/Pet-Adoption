@@ -220,12 +220,13 @@ app.get('/my-listings', verifyToken, async (req, res) => {
         const userPets = await petsCollection.find({ ownerEmail: queryEmail }).toArray();
 
         const totalListings = userPets.length;
-        const available = userPets.filter(pet => pet.status === 'available' || pet.status !== 'adopted').length;
-        const shadowAdopted = userPets.filter(pet => pet.status === 'adopted').length;
+       const available = userPets.filter(pet => pet.status === 'available').length;
+         const adopted = userPets.filter(pet => pet.status === 'adopted').length;
+        
 
         res.send({
             listings: userPets,
-            stats: { totalListings, available, adopted: shadowAdopted }
+            stats: { totalListings, available, adopted }
         });
     } catch (err) {
         res.status(500).send({ listings: [], stats: { totalListings: 0, available: 0, adopted: 0 } });
@@ -237,22 +238,31 @@ app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();
         const petId = req.params.petId;
+        const petsCollection = await getPetsCollection();
 
-        const query= {
-            $or: [
-                { petId: petId },
-                { petId: String(petId) },
-                { petId: new ObjectId(petId) },
-                { "petId": petId }
-            ]
-        };
+const pet = await petsCollection.findOne({
+    _id: new ObjectId(petId)
+});
 
-        const result = await requestsCollection.find(query).toArray();
+if (!pet || pet.ownerEmail !== req.user.email) {
+    return res.status(403).send({ message: "Forbidden" });
+}
+
+        const result = await requestsCollection.find({
+    petId: petId
+}).toArray();
         res.send(result);
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
 });
+if (!request) {
+    return res.status(404).send({ message: "Request not found" });
+}
+if (pet.status === 'adopted') {
+    return res.status(400).send({ message: "Already adopted" });
+}
+
 
 app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
     try {
@@ -274,6 +284,17 @@ app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
             { _id: new ObjectId(req.params.id) },
             { $set: { status: 'Approved' } }
         );
+        await requestsCollection.updateMany(
+    {
+        petId,
+        _id: { $ne: new ObjectId(req.params.id) }
+    },
+    {
+        $set: {
+            status: "Rejected"
+        }
+    }
+);
 
         await petsCollection.updateOne(
             { _id: new ObjectId(petId) },
@@ -290,6 +311,19 @@ app.patch('/requests/approve/:id', verifyToken, async (req, res) => {
 app.patch('/requests/reject/:id', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();
+        const petsCollection = await getPetsCollection();
+
+        const request = await requestsCollection.findOne({
+            _id: new ObjectId(req.params.id)
+        });
+
+        const pet = await petsCollection.findOne({
+            _id: new ObjectId(request.petId)
+        });
+
+        if (!pet || pet.ownerEmail !== req.user.email) {
+            return res.status(403).send({ message: "Not allowed" });
+        }
 
         await requestsCollection.updateOne(
             { _id: new ObjectId(req.params.id) },
@@ -302,7 +336,6 @@ app.patch('/requests/reject/:id', verifyToken, async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 });
-
 app.get('/', (req, res) => {
     res.send('Server Running Smoothly 🚀');
 });
