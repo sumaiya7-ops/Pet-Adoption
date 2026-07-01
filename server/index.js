@@ -221,11 +221,15 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
 app.get('/my-listings', verifyToken, async (req, res) => {
     try {
         const petsCollection = await getPetsCollection();
-        const queryEmail = req.query.email;
+      const queryEmail = req.query.email;
 
-        if (req.user.email !== queryEmail) {
-            return res.status(403).send({ message: "Forbidden Access" });
-        }
+if (!queryEmail) {
+    return res.status(400).send({ message: "email required" });
+}
+
+if (req.user.email !== queryEmail) {
+    return res.status(403).send({ message: "Forbidden Access" });
+}
 
         const userPets = await petsCollection.find({ ownerEmail: queryEmail }).toArray();
         const petId = req.body.petId;

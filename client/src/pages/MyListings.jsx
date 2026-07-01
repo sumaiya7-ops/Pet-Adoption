@@ -70,13 +70,15 @@ const fetchRequests = async (pet) => {
     `${baseUrl}/pet-requests/${pet._id}`,
     { withCredentials: true }
   );
-
+ 
   setRequests(res.data);
 };
 
-  useEffect(() => {
-    if (user?.email) loadListings();
-  }, [user]);
+useEffect(() => {
+  if (user?.email) {
+    loadListings();
+  }
+}, [user?.email]);
 
   if (loading) {
     return (
