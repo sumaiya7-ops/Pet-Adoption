@@ -60,6 +60,9 @@ const MyListings = () => {
   };
 
 const fetchRequests = async (pet) => {
+     if (!pet?._id) return;  
+
+
   setSelectedPet(pet);   // 🟢 আগে state set
   setShowModal(true);
 
@@ -207,14 +210,22 @@ const fetchRequests = async (pet) => {
 
                       {req.status !== "Approved" && (
                         <button
-                          onClick={async () => {
-                            axios.patch(`${baseUrl}/requests/approve/${req._id}`, {
-  petId: selectedPet._id
-})
-                            toast.success("Approved");
-                            fetchRequests(selectedPet);
-                            loadListings();
-                          }}
+                 onClick={async () => {
+  try {
+    await axios.patch(
+      `${baseUrl}/requests/approve/${req._id}`,
+      { petId: selectedPet?._id },
+      { withCredentials: true }
+    );
+
+    toast.success("Approved");
+    fetchRequests(selectedPet);
+    loadListings();
+
+  } catch (err) {
+    toast.error("Approve failed");
+  }
+}}
                           className="bg-green-600 text-white px-2 py-1 text-xs"
                         >
                           Approve
