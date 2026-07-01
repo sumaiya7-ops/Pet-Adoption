@@ -12,12 +12,23 @@ const allowedOrigins = [
     'https://pet-adoption-one-tau.vercel.app'
 ];
 
+
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        // allow Postman / server-to-server requests
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true
 }));
 
-app.options('/{*splat}', cors());
+
+
 app.use(express.json());
 app.use(cookieParser());
 let cachedClient = null;
