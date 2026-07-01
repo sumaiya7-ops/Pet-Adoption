@@ -24,22 +24,21 @@ const MyListings = () => {
   const [requests, setRequests] = useState([]);
 
   // LOAD LISTINGS
-  const loadListings = async () => {
-    try {
-      const res = await axios.get(
-        `${baseUrl}/my-listings?email=${user.email}`,
-        { withCredentials: true }
-      );
+const loadListings = async () => {
+  if (!user?.email) return;   // 👈 ADD THIS FIRST
 
-      setPets(res.data.listings);
-      setStats(res.data.stats);
-    } catch (err) {
-      toast.error("Failed to load listings");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const res = await axios.get(
+      `${baseUrl}/my-listings?email=${user.email}`,
+      { withCredentials: true }
+    );
 
+    setPets(res.data.listings);
+    setStats(res.data.stats);
+  } catch (err) {
+    toast.error("Failed to load listings");
+  }
+};
   // DELETE PET
   const handleDelete = async (id) => {
     const ok = window.confirm("Delete this pet?");

@@ -227,8 +227,10 @@ if (!queryEmail) {
     return res.status(400).send({ message: "email required" });
 }
 
-if (req.user.email !== queryEmail) {
-    return res.status(403).send({ message: "Forbidden Access" });
+const queryEmail = req.query.email;
+
+if (!queryEmail) {
+  return res.status(400).send({ message: "email required" });
 }
 
         const userPets = await petsCollection.find({ ownerEmail: queryEmail }).toArray();
