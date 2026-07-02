@@ -220,11 +220,15 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
 app.get('/my-listings', verifyToken, async (req, res) => {
   const petsCollection = await getPetsCollection();
 
-  const userEmail = req.user.email;
+const queryEmail = req.query.email;
 
-  const userPets = await petsCollection
-    .find({ ownerEmail: userEmail })
-    .toArray();
+if (!queryEmail) {
+  return res.status(400).send({ message: "email required" });
+}
+
+const userPets = await petsCollection.find({
+  ownerEmail: queryEmail
+}).toArray();
 
   const totalListings = userPets.length;
   const available = userPets.filter(p => p.status === "available").length;

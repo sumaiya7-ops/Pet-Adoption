@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 const MyListings = () => {
   const { user } = useContext(AuthContext);
+  console.log("USER EMAIL:", user?.email); 
 
   const baseUrl =
     import.meta.env.VITE_API_URL ||
@@ -29,7 +30,7 @@ const loadListings = async () => {
 
   try {
     const res = await axios.get(
-      `${baseUrl}/my-listings`,
+      `${baseUrl}/my-listings?email=${user.email}`,
       { withCredentials: true }
     );
 
@@ -40,7 +41,7 @@ const loadListings = async () => {
     toast.error("Failed to load listings");
   } finally {
     setLoading(false);
-  }
+  } 
 };
   // DELETE PET
   const handleDelete = async (id) => {
