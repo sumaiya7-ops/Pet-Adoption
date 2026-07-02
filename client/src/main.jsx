@@ -18,6 +18,7 @@ import AddPet from './pages/AddPet';
 import MyListings from './pages/MyListings';
 import NotFound from './pages/NotFound';
 import PrivateRoute from './routes/PrivateRoute';
+import UpdatePet from './pages/UpdatePet';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
       { path: "my-requests", element: <MyRequests /> },
       { path: "add-pet", element: <AddPet /> },
       { path: "my-listings", element: <MyListings /> },
+       { path: "update-pet/:id", element: <UpdatePet /> },
     ]
   }
 ]);
