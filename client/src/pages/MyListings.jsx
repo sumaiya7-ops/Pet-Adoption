@@ -161,7 +161,7 @@ useEffect(() => {
                     Requests
                   </button>
 
-     <button
+  <button
   onClick={() => navigate(`/dashboard/update-pet/${pet._id}`)}
   className="bg-yellow-500 text-white px-2 py-1 text-xs rounded"
 >
