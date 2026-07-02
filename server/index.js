@@ -12,7 +12,6 @@ const allowedOrigins = [
     'https://pet-adoption-one-tau.vercel.app'
 ];
 
-
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -21,19 +20,14 @@ app.use(cors({
             return callback(null, true);
         }
 
-       return callback(null, false);
+        return callback(null, false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.options("*", cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
 
+app.options("*", cors());
 app.use(express.json());
 app.use(cookieParser());
 let cachedClient = null;
@@ -227,39 +221,30 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
 app.get('/my-listings', verifyToken, async (req, res) => {
     try {
         const petsCollection = await getPetsCollection();
-      const queryEmail = req.query.email;
 
-if (!queryEmail) {
-    return res.status(400).send({ message: "email required" });
-}
+        const queryEmail = req.query.email;
 
-const queryEmail = req.query.email;
+        if (!queryEmail) {
+            return res.status(400).send({ message: "email required" });
+        }
 
-if (!queryEmail) {
-  return res.status(400).send({ message: "email required" });
-}
-
-        const userPets = await petsCollection.find({ ownerEmail: queryEmail }).toArray();
-        const petId = req.body.petId;
-
-if (!petId) {
-    return res.status(400).send({ message: "petId required" });
-}
+        const userPets = await petsCollection
+            .find({ ownerEmail: queryEmail })
+            .toArray();
 
         const totalListings = userPets.length;
-       const available = userPets.filter(pet => pet.status === 'available').length;
-         const adopted = userPets.filter(pet => pet.status === 'adopted').length;
-        
+        const available = userPets.filter(p => p.status === 'available').length;
+        const adopted = userPets.filter(p => p.status === 'adopted').length;
 
         res.send({
             listings: userPets,
             stats: { totalListings, available, adopted }
         });
+
     } catch (err) {
-        res.status(500).send({ listings: [], stats: { totalListings: 0, available: 0, adopted: 0 } });
+        res.status(500).send({ listings: [], stats: {} });
     }
 });
-
 
 app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     try {
