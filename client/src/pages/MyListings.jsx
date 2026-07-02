@@ -25,9 +25,11 @@ const MyListings = () => {
 
   // LOAD LISTINGS
 const loadListings = async () => {
-  if (!user?.email) return;   // 👈 ADD THIS FIRST
+  if (!user?.email) return;
 
   try {
+    setLoading(true); // optional but good
+
     const res = await axios.get(
       `${baseUrl}/my-listings?email=${user.email}`,
       { withCredentials: true }
@@ -35,8 +37,11 @@ const loadListings = async () => {
 
     setPets(res.data.listings);
     setStats(res.data.stats);
+
   } catch (err) {
     toast.error("Failed to load listings");
+  } finally {
+    setLoading(false); // 🔥 THIS IS MISSING
   }
 };
   // DELETE PET
@@ -72,12 +77,11 @@ const fetchRequests = async (pet) => {
  
   setRequests(res.data);
 };
-
 useEffect(() => {
   if (user?.email) {
     loadListings();
   }
-}, [user?.email]);
+}, [user]);
 
   if (loading) {
     return (
