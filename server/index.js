@@ -218,32 +218,23 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
 });
 
 app.get('/my-listings', verifyToken, async (req, res) => {
-    try {
-        const petsCollection = await getPetsCollection();
+  const petsCollection = await getPetsCollection();
 
-        const userEmail = req.user.email; // ⭐ JWT থেকে আসবে
+  const userEmail = req.user.email;
 
-        const userPets = await petsCollection
-            .find({ ownerEmail: userEmail })
-            .toArray();
+  const userPets = await petsCollection
+    .find({ ownerEmail: userEmail })
+    .toArray();
 
-        const totalListings = userPets.length;
-        const available = userPets.filter(p => p.status === 'available').length;
-        const adopted = userPets.filter(p => p.status === 'adopted').length;
+  const totalListings = userPets.length;
+  const available = userPets.filter(p => p.status === "available").length;
+  const adopted = userPets.filter(p => p.status === "adopted").length;
 
-        res.send({
-            listings: userPets,
-            stats: { totalListings, available, adopted }
-        });
-
-    } catch (err) {
-        res.status(500).send({
-            listings: [],
-            stats: { totalListings: 0, available: 0, adopted: 0 }
-        });
-    }
+  res.send({
+    listings: userPets,
+    stats: { totalListings, available, adopted }
+  });
 });
-
 app.get('/pet-requests/:petId', verifyToken, async (req, res) => {
     try {
         const requestsCollection = await getRequestsCollection();

@@ -75,11 +75,10 @@ const fetchRequests = async (pet) => {
  
   setRequests(res.data);
 };
+
 useEffect(() => {
-  if (user?.email) {
-    loadListings();
-  }
-}, [user]);
+  if (user?.email) loadListings();
+}, [user?.email]);
 
   if (loading) {
     return (
