@@ -21,14 +21,18 @@ app.use(cors({
             return callback(null, true);
         }
 
-        // ❌ DO NOT throw error
-        return callback(null, false);
+       return callback(null, false);
     },
-    credentials: true, 
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.options('*', cors());
+app.options("*", cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.use(express.json());
 app.use(cookieParser());
