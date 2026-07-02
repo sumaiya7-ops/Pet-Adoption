@@ -11,12 +11,13 @@ const UpdatePet = () => {
     const navigate = useNavigate();
     const [pet, setPet] = useState(null);
 
-    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app/';  
-    useEffect(() => {
-        axios.get(`${baseUrl}/pets/${id}`)
-            .then(res => setPet(res.data))
-            .catch(err => console.error(err));
-    }, [id, baseUrl]);
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://pet-adoption-server-gamma.vercel.app';  
+ useEffect(() => {
+    axios
+        .get(`${baseUrl}/pets/${id}`)
+        .then((res) => setPet(res.data))
+        .catch((err) => console.error(err));
+}, [id, baseUrl]);
 
     const handleUpdate = (e) => {
         e.preventDefault();
