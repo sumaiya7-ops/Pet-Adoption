@@ -28,10 +28,8 @@ const loadListings = async () => {
   if (!user?.email) return;
 
   try {
-    setLoading(true); // optional but good
-
     const res = await axios.get(
-      `${baseUrl}/my-listings?email=${user.email}`,
+      `${baseUrl}/my-listings`,
       { withCredentials: true }
     );
 
@@ -41,7 +39,7 @@ const loadListings = async () => {
   } catch (err) {
     toast.error("Failed to load listings");
   } finally {
-    setLoading(false); // 🔥 THIS IS MISSING
+    setLoading(false);
   }
 };
   // DELETE PET

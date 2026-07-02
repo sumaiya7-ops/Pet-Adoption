@@ -217,19 +217,14 @@ app.delete('/requests/:id', verifyToken, async (req, res) => {
     }
 });
 
-
 app.get('/my-listings', verifyToken, async (req, res) => {
     try {
         const petsCollection = await getPetsCollection();
 
-        const queryEmail = req.query.email;
-
-        if (!queryEmail) {
-            return res.status(400).send({ message: "email required" });
-        }
+        const userEmail = req.user.email; // ⭐ JWT থেকে আসবে
 
         const userPets = await petsCollection
-            .find({ ownerEmail: queryEmail })
+            .find({ ownerEmail: userEmail })
             .toArray();
 
         const totalListings = userPets.length;
@@ -242,7 +237,10 @@ app.get('/my-listings', verifyToken, async (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).send({ listings: [], stats: {} });
+        res.status(500).send({
+            listings: [],
+            stats: { totalListings: 0, available: 0, adopted: 0 }
+        });
     }
 });
 
