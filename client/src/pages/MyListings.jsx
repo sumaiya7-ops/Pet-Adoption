@@ -162,7 +162,7 @@ useEffect(() => {
                   </button>
 
   <button
-  onClick={() => navigate(`/pages/update-pet/${pet._id}`)}
+  onClick={() => navigate(`/dashboard/update-pet/${pet._id}`)}
   className="bg-yellow-500 text-white px-2 py-1 text-xs rounded"
 >
   Edit

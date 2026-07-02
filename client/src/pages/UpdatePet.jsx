@@ -21,20 +21,19 @@ const UpdatePet = () => {
     const handleUpdate = (e) => {
         e.preventDefault();
         const form = e.target;
-
-        const updatedData = {
-            name: form.name.value,
-            category: form.species.value,
-            breed: form.breed.value,
-            age: form.age.value,
-            gender: form.gender.value,
-            image: form.image.value,
-            healthStatus: form.healthStatus.value,
-            vaccinationStatus: form.vaccinationStatus.value,
-            location: form.location.value,
-            adoptionFee: parseFloat(form.adoptionFee.value),
-            description: form.description.value,
-        };
+const updatedData = {
+    name: form.name.value,
+    species: form.species.value, // ✅ category না
+    breed: form.breed.value,
+    age: form.age.value,
+    gender: form.gender.value,
+    image: form.image.value,
+    healthStatus: form.healthStatus.value,
+    vaccinationStatus: form.vaccinationStatus.value,
+    location: form.location.value,
+    adoptionFee: parseFloat(form.adoptionFee.value),
+    description: form.description.value,
+};
       
         axios.put(`${baseUrl}/pets/${id}`, updatedData, { withCredentials: true })
             .then(res => {
@@ -68,7 +67,7 @@ const UpdatePet = () => {
                     </div>
                     <div>
                         <label className="block text-blue-900 font-bold mb-2">Species</label>
-                        <select name="species" defaultValue={pet.category} required className="w-full bg-indigo-100/50 p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800">
+                        <select name="species" defaultValue={pet.species} required className="w-full bg-indigo-100/50 p-3.5 rounded-xl border border-indigo-200 focus:outline-none focus:border-purple-800">
                             <option value="Dog">Dog</option>
                             <option value="Cat">Cat</option>
                             <option value="Bird">Bird</option>
