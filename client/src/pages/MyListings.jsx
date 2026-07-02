@@ -2,6 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
 
 const MyListings = () => {
   const { user } = useContext(AuthContext);
@@ -157,9 +160,12 @@ useEffect(() => {
                     Requests
                   </button>
 
-                  <button className="bg-yellow-500 text-white px-2 py-1 text-xs rounded">
-                    Edit
-                  </button>
+     <button
+  onClick={() => navigate(`/dashboard/update-pet/${pet._id}`)}
+  className="bg-yellow-500 text-white px-2 py-1 text-xs rounded"
+>
+  Edit
+</button>
 
                   <button
                     onClick={() => handleDelete(pet._id)}
