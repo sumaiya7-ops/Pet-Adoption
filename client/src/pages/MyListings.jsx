@@ -4,9 +4,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const navigate = useNavigate();
+
 
 const MyListings = () => {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   console.log("USER EMAIL:", user?.email); 
 
