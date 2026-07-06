@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { HeartHandshake, Search, ShieldCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion"; 
 
 const Hero = () => {
+   const navigate = useNavigate(); 
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-indigo-100 via-white to-indigo-200">     
       <div className="absolute top-0 left-0 w-72 h-72 bg-indigo-300 rounded-full blur-3xl opacity-20 animate-pulse"></div>
@@ -28,19 +32,23 @@ const Hero = () => {
             {/* Buttons */}
             <div className="flex flex-wrap gap-4 pt-4">
 
-              <Link
-                to="/all-pets"
-                className="bg-indigo-700 hover:bg-indigo-800 text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:scale-110 hover:shadow-indigo-300/50 transition-all duration-300"
+              <motion.div
+                onClick={() => navigate("/all-pets")}
+                whileHover={{ scale: 1.1, boxShadow: "0px 10px 20px rgba(99, 102, 241, 0.4)" }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-indigo-700 hover:bg-indigo-800 text-white px-8 py-4 rounded-2xl font-bold shadow-lg cursor-pointer transition-colors duration-300"
               >
                 Explore Pets
-              </Link>
+              </motion.div>
 
-              <Link
-                to="/register"
-                className="bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-900 px-8 py-4 rounded-2xl font-bold shadow-md hover:scale-110 transition-all duration-300"
+                 <motion.div
+                onClick={() => navigate("/register")}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-900 px-8 py-4 rounded-2xl font-bold shadow-md cursor-pointer transition-colors duration-300"
               >
                 Join Now
-              </Link>
+              </motion.div>
 
             </div>
 

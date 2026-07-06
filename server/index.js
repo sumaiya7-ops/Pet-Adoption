@@ -74,6 +74,7 @@ const verifyToken = (req, res, next) => {
         next();
     });
 };
+
 app.post('/jwt', (req, res) => {
     const user = req.body;
 
@@ -87,7 +88,6 @@ app.post('/jwt', (req, res) => {
         sameSite: 'none'
     }).send({ success: true });
 });
-
 app.post('/logout', (req, res) => {
     res.clearCookie('token', {
         httpOny: true,
