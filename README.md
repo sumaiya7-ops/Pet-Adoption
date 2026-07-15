@@ -42,8 +42,10 @@ A modern and responsive pet adoption platform built with the MERN stack. It allo
 
 ---
 
-## Frontend
+# 🧰 Tech Stack
 
+
+## 🎨 Frontend
 <p>
 <img src="https://skillicons.dev/icons?i=react,tailwind,firebase" />
 </p>
@@ -53,48 +55,12 @@ A modern and responsive pet adoption platform built with the MERN stack. It allo
 - React Toastify
 - Lucide React
 
-## Backend
+## ⚙️ Backend
 
 <p>
 <img src="https://skillicons.dev/icons?i=nodejs,express,mongodb,jwt" />
 </p>
 
-- Cookie Parser
-- Dotenv
-- CORS
-
-
-# 🧰 Tech Stack
-
-## 🎨 Frontend
-
-<p>
-  <img src="https://skillicons.dev/icons?i=react,reactrouter,axios,tailwind,reacttoastify,lucide,firebase" />
-</p>
-
-## ⚙️ Backend
-
-<p>
-  <img src="https://skillicons.dev/icons?i=nodejs,express,mongodb,jwt,cookie,dotenv,cors" />
-</p>
-
-
-# 🧰 Tech Stack
-
-## Frontend
-- React.js
-- React Router DOM
-- Axios
-- Tailwind CSS
-- React Toastify
-- Lucide React
-- Firebase Authentication
-
-## Backend
-- Node.js
-- Express.js
-- MongoDB
-- JWT
 - Cookie Parser
 - Dotenv
 - CORS
