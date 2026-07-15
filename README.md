@@ -53,7 +53,7 @@ A modern and responsive pet adoption platform built with the MERN stack. It allo
 ### ⚙️ Backend
 
 <p>
-  <img src="https://skillicons.dev/icons?i=nodejs,express,mongodb, JWT,Cookie Parser,Dotenv,CORS" />
+  <img src="https://skillicons.dev/icons?i=nodejs,express,mongodb,JWT,Cookie Parser,Dotenv,CORS" />
 </p>
 
 
