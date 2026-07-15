@@ -15,11 +15,8 @@ https://pet-adoption-one-tau.vercel.app/
 ## Home Page
 <img src="https://i.postimg.cc/wT1mPvM1/Screenshot-2026-07-15-222958.png">
 
-## Pet Listing
-<img src="./screenshots/pets.png">
-
-## Dashboard
-<img src="./screenshots/dashboard.png">
+## All Pets
+<img src="https://i.postimg.cc/L6gJDbQ7/Screenshot-2026-07-15-223054.png">
 
 ---
 
