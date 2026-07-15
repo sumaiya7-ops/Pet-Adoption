@@ -4,10 +4,10 @@ A modern and responsive pet adoption platform built with the MERN stack. It allo
 
 ---
 
-## 🔗 Live Demo & Repository
+# 🌐 Live Demo
 
-- 🌐 Live Site: [https://pet-adoption-one-tau.vercel.app/]
-
+🚀 Frontend:
+https://pet-adoption-one-tau.vercel.app/
 ---
 
 # 🚀 Features
@@ -91,7 +91,7 @@ PetAdopt/
 ## 1️⃣ Clone Project
 
 ```bash
-git clone https://github.com/your-repo.git---
+git clone https://github.com/sumaiya7-ops/Pet-Adoption.git
 
 2️⃣ Client setup
 cd client
