@@ -10,6 +10,19 @@ A modern and responsive pet adoption platform built with the MERN stack. It allo
 https://pet-adoption-one-tau.vercel.app/
 ---
 
+# 📸 Screenshots
+
+## Home Page
+<img src="./screenshots/home.png">
+
+## Pet Listing
+<img src="./screenshots/pets.png">
+
+## Dashboard
+<img src="./screenshots/dashboard.png">
+
+---
+
 # 🚀 Features
 
 ## 🧑‍💻 Frontend (Client)
@@ -67,22 +80,21 @@ https://pet-adoption-one-tau.vercel.app/
 
 ---
 # 📂 Project Structure
-PetAdopt/
-├── client/
-│ ├── src/
-│ │ ├── components/
-│ │ ├── pages/
-│ │ ├── context/
+
+PetAdopt
+│
+├── client
+│ ├── src
+│ │ ├── components
+│ │ ├── pages
+│ │ ├── context
 │ │ └── App.jsx
 │
-├── server/
-│ ├── index.js
-│ ├── routes/
-│ ├── controllers/
-│ └── models/
-
-
-
+└── server
+├── routes
+├── controllers
+├── models
+└── index.js
 
 ---
 
@@ -90,8 +102,9 @@ PetAdopt/
 
 ## 1️⃣ Clone Project
 
-```bash
 git clone https://github.com/sumaiya7-ops/Pet-Adoption.git
+
+```bash
 
 2️⃣ Client setup
 cd client
@@ -120,7 +133,7 @@ JWT_SECRET=your_secret_key
 * `Token stored in HTTPOnly cookie`
 * `Protected routes validate token`
 
-### 🐾 Core Features
+# 🔥 Key Functionalities
 
 #### 🐶 Pet Management
 > **Feline & Canine Administration**
